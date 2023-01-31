@@ -1,39 +1,50 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
-  
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _controllerOutlined = TextEditingController();
-    
     return Scaffold(
-      appBar: new AppBar(
-        flexibleSpace: SafeArea(
-          child: TextField(
-            controller: _controllerOutlined,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              labelText: 'Outlined',
-              hintText: 'hint text',
-              helperText: 'supporting text',
-              errorText: 'error text',
-              border: const OutlineInputBorder(),
-              filled: true,
+        body: NestedScrollView(
+      floatHeaderSlivers: true,
+      headerSliverBuilder: (context, innerBoxIsScrolled) => [
+        SliverAppBar(
+          floating: true,
+          snap: true,
+          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+          title: Container(
+            alignment: Alignment.center,
+            height: 45,
+            child: TextField(
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.secondary),
+                ),
+                labelText: "Search",
+                // hintText: 'Enter a search term',
+              ),
             ),
           ),
         ),
+      ],
+      body: ListView.builder(
+        itemCount: 100,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text('Item ${index + 1}'),
+          );
+        },
       ),
-      body: SafeArea(
-        child: Column(
-          children: [Text("data")],
-        ),
-      ),
-    );
+    ));
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ani/pages/profile_page.dart';
 import 'package:flutter_ani/pages/search_page.dart';
+import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:system_theme/system_theme.dart';
@@ -11,11 +13,10 @@ void main() async {
   SystemTheme.fallbackColor = const Color.fromARGB(255, 50, 134, 82);
   await SystemTheme.accentColor.load();
 
-  runApp(MaterialApp(
+  runApp(GetMaterialApp(
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
-        return Directionality(textDirection: TextDirection.ltr, child: child!);
-      },
+        return Directionality(textDirection: TextDirection.ltr, child: child!); },
       themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: true,
@@ -30,6 +31,8 @@ void main() async {
 }
 
 class Example extends StatefulWidget {
+  const Example({super.key});
+
   @override
   _ExampleState createState() => _ExampleState();
 }
@@ -48,26 +51,18 @@ class _ExampleState extends State<Example> {
       style: optionStyle,
     ),
     SearchPage(),
-    Text(
-      'Profile',
-      style: optionStyle,
-    ),
+    ProfilePage()
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   elevation: 20,
-      //   title: const Text('Ani'),
-      // ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).colorScheme.secondaryContainer,
         ),
         child: SafeArea(
           child: Padding(
@@ -75,14 +70,15 @@ class _ExampleState extends State<Example> {
             child: GNav(
               haptic: true,
               rippleColor: Colors.grey[300]!,
-              hoverColor: Colors.grey[100]!,
+              hoverColor: Theme.of(context).colorScheme.secondary,
               gap: 8,
-              activeColor: Colors.black,
+              // activeColor: Get.isDarkMode ? Colors.black : Colors.white,
+              activeColor: Get.isDarkMode ? Colors.white : Colors.black,
               iconSize: 24,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               duration: Duration(milliseconds: 400),
-              tabBackgroundColor: Colors.grey[100]!,
-              color: Colors.black,
+              tabBackgroundColor: Theme.of(context).colorScheme.onSecondary,
+              color: Get.isDarkMode ? Colors.white : Colors.black,
               tabs: [
                 GButton(
                   icon: LineIcons.home,
