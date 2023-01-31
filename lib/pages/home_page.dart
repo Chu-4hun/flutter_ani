@@ -41,6 +41,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             bottom: TabBar(
+              isScrollable: true,
               tabs: [
                 Tab(child: Text('Для меня')),
                 Tab(child: Text('Кино')),
