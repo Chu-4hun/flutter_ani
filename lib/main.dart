@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ani/pages/home_page.dart';
 import 'package:flutter_ani/pages/profile_page.dart';
 import 'package:flutter_ani/pages/search_page.dart';
 import 'package:get/get.dart';
@@ -27,25 +28,22 @@ void main() async {
         brightness: Brightness.dark,
         colorSchemeSeed: SystemTheme.accentColor.accent,
       ),
-      home: Example()));
+      home: MyApp()));
 }
 
-class Example extends StatefulWidget {
-  const Example({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
   @override
-  _ExampleState createState() => _ExampleState();
+  _MyAppState createState() => _MyAppState();
 }
 
-class _ExampleState extends State<Example> {
+class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Home',
-      style: optionStyle,
-    ),
+    HomePage(),
     Text(
       'Likes',
       style: optionStyle,

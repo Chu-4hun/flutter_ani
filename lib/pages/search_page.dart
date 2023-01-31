@@ -31,7 +31,7 @@ class SearchPage extends StatelessWidget {
                       color: Theme.of(context).colorScheme.secondary),
                 ),
                 labelText: "Search",
-                // hintText: 'Enter a search term',
+                hintText: 'Enter a search term',
               ),
             ),
           ),
