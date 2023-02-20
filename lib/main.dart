@@ -17,7 +17,8 @@ void main() async {
   runApp(GetMaterialApp(
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
-        return Directionality(textDirection: TextDirection.ltr, child: child!); },
+        return Directionality(textDirection: TextDirection.ltr, child: child!);
+      },
       themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: true,
