@@ -24,7 +24,7 @@ class ProfilePage extends StatelessWidget {
               height: Get.height / 10,
             ),
             CircleAvatar(
-              radius: (Get.height * Get.width) / 4000,
+              radius: (Get.height * Get.width) / 5000,
               backgroundImage: const NetworkImage(
                   "https://randomuser.me/api/portraits/lego/6.jpg"),
                    ),
