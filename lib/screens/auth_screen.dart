@@ -1,7 +1,9 @@
-import 'dart:html';
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../utils/custom_accept_button.dart';
+import '../utils/custom_input_field.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -11,77 +13,166 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  TextEditingController controllerLogin = TextEditingController();
-  TextEditingController controllerPassword = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: context.width > 500
-          ? Center(
-              child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text("Row"), Text("Row")]),
-            )
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Welcome!",
-                      style: TextStyle(fontSize: 60),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Log in",
-                      style: TextStyle(fontSize: 40),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Center(
+        body: context.width > 550
+            ? Center(
+                child: Row(children: [
+                  Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      padding: EdgeInsets.all(10),
-                      child: Form(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Theme.of(context).colorScheme.secondaryContainer,
+                            Theme.of(context).colorScheme.background
+                          ],
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Welcome",
+                                  style: TextStyle(fontSize: 60),
+                                ),
+                                Text(
+                                  "Log in",
+                                  style: TextStyle(fontSize: 25),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: LoginForm(),
+                      ),
+                    ],
+                  )),
+                ]),
+              )
+            : Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Theme.of(context).colorScheme.secondaryContainer,
+                      Theme.of(context).colorScheme.background
+                    ],
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Container(
+                        alignment: Alignment.center,
                         child: Column(
                           children: [
-                            TextFormField(
-                              controller: controllerLogin,
-                              validator: ((value) =>
-                                  checkInput(value, "Login")),
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Login",
-                              ),
+                            Text(
+                              "Welcome",
+                              style: TextStyle(fontSize: 60),
                             ),
-                            const SizedBox(height: 10),
-                            TextFormField(
-                              obscureText: true,
-                              controller: controllerPassword,
-                              validator: ((value) =>
-                                  checkInput(value, "Password")),
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Password",
-                              ),
+                            Text(
+                              "Log in",
+                              style: TextStyle(fontSize: 25),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Center(child: LoginForm()),
+                    ),
+
+                    // const SizedBox(height: 70),
+                  ],
+                ),
+              ));
+  }
+}
+
+class LoginForm extends StatefulWidget {
+  LoginForm();
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final _key = GlobalKey<FormState>();
+
+  TextEditingController controllerLogin = TextEditingController();
+  TextEditingController controllerPassword = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _key,
+      child: Column(
+        children: [
+          CustomInputField(
+            validator: (value) => checkInput(value, "Login"),
+            controller: controllerLogin,
+            text: "Login",
+          ),
+          const SizedBox(height: 10),
+          CustomInputField(
+            validator: (value) => checkInput(value, "Password"),
+            controller: controllerPassword,
+            text: "Password",
+            obscureText: true,
+          ),
+          const SizedBox(height: 10),
+          CustomAcceptButton(
+            child: Center(
+                child: Text(
+              "Log in",
+              style: TextStyle(color: Theme.of(context).colorScheme.background),
+            )),
+            func: () {
+              if (_key.currentState!.validate()) {
+                Get.snackbar("tada", "message");
+              } else {
+                Get.snackbar("User error", "enter correct values");
+              }
+            },
+          ),
+          const SizedBox(height: 10),
+          RichText(
+            text: TextSpan(
+              children: [
+                const TextSpan(
+                  text: 'Doesn`t have an account? ',
+                ),
+                TextSpan(
+                  text: 'Register',
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
+                  recognizer: TapGestureRecognizer()..onTap = () {},
+                ),
+              ],
             ),
+          ),
+        ],
+      ),
     );
   }
 }

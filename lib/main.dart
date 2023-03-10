@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_navigation/flutter_adaptive_navigation.dart';
-import 'package:flutter_ani/pages/home_page.dart';
-import 'package:flutter_ani/pages/profile_page.dart';
-import 'package:flutter_ani/pages/search_page.dart';
 import 'package:flutter_ani/screens/auth_screen.dart';
+import 'package:flutter_ani/screens/user_screen.dart';
 import 'package:get/get.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:system_theme/system_theme.dart';
 
 void main() async {
@@ -19,16 +14,19 @@ void main() async {
   runApp(GetMaterialApp(
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
+        SystemTheme.fallbackColor = Colors.deepPurple;
         return Directionality(textDirection: TextDirection.ltr, child: child!);
       },
       themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: SystemTheme.accentColor.accent,
+        // colorSchemeSeed: Colors.blue,
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
+        // colorSchemeSeed: Colors.green,
         colorSchemeSeed: SystemTheme.accentColor.accent,
       ),
       home: AuthScreen()));
