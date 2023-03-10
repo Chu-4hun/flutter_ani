@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -9,7 +8,7 @@ class CustomInputField extends StatelessWidget {
     this.text,
     this.icon,
     this.obscureText,
-    this.validator,
+    this.validator, this.autovalidateMode,
   });
 
   final TextEditingController controller;
@@ -17,10 +16,12 @@ class CustomInputField extends StatelessWidget {
   final IconData? icon;
   final bool? obscureText;
   final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode: autovalidateMode?? AutovalidateMode.disabled,
       validator: validator,
       obscureText: obscureText ?? false,
       controller: controller,

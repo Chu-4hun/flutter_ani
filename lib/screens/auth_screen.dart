@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../utils/check_input.dart';
 import '../utils/custom_accept_button.dart';
 import '../utils/custom_input_field.dart';
 
@@ -159,8 +160,9 @@ class _LoginFormState extends State<LoginForm> {
           RichText(
             text: TextSpan(
               children: [
-                const TextSpan(
+                 TextSpan(
                   text: 'Doesn`t have an account? ',
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary)
                 ),
                 TextSpan(
                   text: 'Register',
@@ -177,15 +179,3 @@ class _LoginFormState extends State<LoginForm> {
   }
 }
 
-String? checkInput(value, String fieldName) {
-  if (value == null || value.isEmpty) {
-    return "$fieldName не должен быть пустым";
-  }
-  if (value.length < 2) {
-    return "$fieldName должен быть от 2 символов";
-  }
-  if (value.length >= 30) {
-    return "$fieldName должен быть до 20 символов";
-  }
-  return null;
-}

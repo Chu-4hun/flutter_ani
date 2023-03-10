@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ani/screens/auth_screen.dart';
-import 'package:flutter_ani/screens/user_screen.dart';
+import 'package:flutter_ani/screens/register_screen.dart';
 import 'package:get/get.dart';
 import 'package:system_theme/system_theme.dart';
 
@@ -29,5 +28,5 @@ void main() async {
         // colorSchemeSeed: Colors.green,
         colorSchemeSeed: SystemTheme.accentColor.accent,
       ),
-      home: AuthScreen()));
+      home: RegisterScreen()));
 }
