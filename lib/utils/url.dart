@@ -1,5 +1,5 @@
 enum URL {
-  token('access/'),
+  accessToken('access/'),
   register('auth/register'),
   login('auth/login'),
   addFriend('interact/friend/add/');

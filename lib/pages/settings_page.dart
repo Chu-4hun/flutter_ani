@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ani/screens/login_screen.dart';
+import 'package:flutter_ani/utils/token.dart';
 import 'package:get/get.dart';
+import 'package:line_icons/line_icons.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -10,7 +13,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool isDarkMode = Get.isDarkMode;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +73,18 @@ class _SettingsPageState extends State<SettingsPage> {
             title: const Text('About'),
             trailing: const Icon(Icons.arrow_forward_ios),
           ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            iconColor: Theme.of(context).colorScheme.error,
+            title: Text(
+              "Log Out",
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+            onTap: () {
+              Token(TokenType.access).clearAll();
+              Get.off(LoginScreen());
+            },
+          )
         ],
       ),
     );

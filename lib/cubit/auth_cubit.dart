@@ -24,7 +24,6 @@ class AuthCubit extends Cubit<AuthState> {
     var auth = 'Basic ${base64Encode(utf8.encode('$login:$password'))}';
 
     try {
-      
       final response = await dio.get(URL.login.value,
           options: Options(headers: <String, String>{'authorization': auth}));
       logger.d('${response.statusCode}\n ${response.data}');
@@ -32,7 +31,28 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.statusCode == 200) {
         emit(AuthSucces());
       }
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 400) {
+        emit(AuthError(e.response?.data));
+      } else {
+        emit(AuthError('Something went wrong'));
+      }
+    }
+  }
 
+  Future<void> getAccessToken(String login, String password) async {
+    emit(AuthLoading());
+    final token = Token(TokenType.refresh).read();
+
+    try {
+      final response = await dio.get(URL.login.value,
+          options: Options(headers: <String, String>{'Authorization': 'Bearer $token'}));
+      logger.d('${response.statusCode}\n ${response.data}');
+
+      if (response.statusCode == 200) {
+        Token(TokenType.access).store(response.data);
+        emit(AuthSucces());
+      }
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
         emit(AuthError(e.response?.data));

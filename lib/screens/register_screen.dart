@@ -10,7 +10,7 @@ import '../cubit/auth_cubit.dart';
 import '../utils/check_input.dart';
 import '../utils/UI/custom_input_field.dart';
 import '../utils/UI/custom_accept_button.dart';
-import 'auth_screen.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});

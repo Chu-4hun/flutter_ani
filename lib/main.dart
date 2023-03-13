@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:system_theme/system_theme.dart';
 
 import 'cubit/auth_cubit.dart';
+import 'screens/loading_screen.dart';
 
 void main() async {
   await GetStorage.init();
@@ -39,6 +40,6 @@ void main() async {
           // colorSchemeSeed: Colors.green,
           colorSchemeSeed: SystemTheme.accentColor.accent,
         ),
-        home: RegisterScreen()),
+        home: SplashScreen()),
   ));
 }

@@ -22,7 +22,7 @@ class Token {
     }
   }
 
-  String get() {
+  String? read() {
     switch (token) {
       case TokenType.access:
         return _storage.read("access");
@@ -31,5 +31,8 @@ class Token {
         return _storage.read("refresh");
     }
   }
-
+  void clearAll(){
+    _storage.remove("refresh");
+    _storage.remove("access");
+  }
 }
