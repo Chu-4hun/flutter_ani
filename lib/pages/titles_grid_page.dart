@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ani/utils/movie_card.dart';
+import 'package:flutter_ani/utils/UI/movie_card.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 class TitlesPage extends StatelessWidget {

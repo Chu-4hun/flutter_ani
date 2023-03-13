@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_navigation/flutter_adaptive_navigation.dart';
 import 'package:line_icons/line_icons.dart';
@@ -7,14 +6,14 @@ import '../pages/home_page.dart';
 import '../pages/profile_page.dart';
 import '../pages/search_page.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class UserScreen extends StatefulWidget {
+  const UserScreen({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
+  _UserScreenState createState() => _UserScreenState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _UserScreenState extends State<UserScreen> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);

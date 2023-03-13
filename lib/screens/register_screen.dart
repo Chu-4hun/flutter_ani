@@ -1,129 +1,145 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ani/models/user.dart';
 import 'package:flutter_ani/utils/email_string_validator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:line_icons/line_icons.dart';
 
+import '../cubit/auth_cubit.dart';
 import '../utils/check_input.dart';
-import '../utils/custom_accept_button.dart';
-import '../utils/custom_input_field.dart';
+import '../utils/UI/custom_input_field.dart';
+import '../utils/UI/custom_accept_button.dart';
+import 'auth_screen.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends State<RegisterScreen> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: context.width > 550
-            ? Center(
-                child: Row(children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [
-                            Theme.of(context).colorScheme.secondaryContainer,
-                            Theme.of(context).colorScheme.background
+      body: BlocConsumer<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthError) {
+            Get.snackbar('Ошибка', state.error);
+          }
+          if (state is AuthSucces) {
+            Get.off(() => LoginScreen());
+          }
+        },
+        builder: (context, state) {
+          return context.width > 600
+              ? Center(
+                  child: Row(children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              Theme.of(context).colorScheme.secondaryContainer,
+                              Theme.of(context).colorScheme.background
+                            ],
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Column(
+                                  children: const [
+                                    Text(
+                                      "Welcome",
+                                      style: TextStyle(fontSize: 60),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      "Register",
+                                      style: TextStyle(fontSize: 30),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: const [
-                                Text(
-                                  "Hello, this wont take to",
-                                  style: TextStyle(fontSize: 60),
-                                ),
-                                Text(
-                                  "Register",
-                                  style: TextStyle(fontSize: 25),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                    ),
+                    Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: LoginForm(),
+                        ),
+                      ],
+                    )),
+                  ]),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Theme.of(context).colorScheme.secondaryContainer,
+                        Theme.of(context).colorScheme.background
+                      ],
                     ),
                   ),
-                  Expanded(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: LoginForm(),
-                      ),
-                    ],
-                  )),
-                ]),
-              )
-            : Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(context).colorScheme.secondaryContainer,
-                      Theme.of(context).colorScheme.background
-                    ],
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: const [
-                            Text(
-                              "Hello, this wont take to long",
-                              style: TextStyle(fontSize: 60),
-                            ),
-                            Text(
-                              "Register",
-                              style: TextStyle(fontSize: 25),
-                            ),
-                          ],
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: const [
+                              Text(
+                                "Welcome",
+                                style: TextStyle(fontSize: 60),
+                              ),
+                              Text(
+                                "Register",
+                                style: TextStyle(fontSize: 25),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Center(child: LoginForm()),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Center(child: LoginForm()),
+                      ),
 
-                    // const SizedBox(height: 70),
-                  ],
-                ),
-              ));
+                      // const SizedBox(height: 70),
+                    ],
+                  ),
+                );
+        },
+      ),
+    );
   }
 }
 
-class LoginForm extends StatefulWidget {
+class LoginForm extends StatelessWidget {
   LoginForm();
 
-  @override
-  State<LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<LoginForm> {
   final _key = GlobalKey<FormState>();
 
-  TextEditingController controllerLogin = TextEditingController();
-  TextEditingController controllerEmail = TextEditingController();
-  TextEditingController controllerPassword = TextEditingController();
+  final TextEditingController _loginController = TextEditingController();
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -133,21 +149,23 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           CustomInputField(
             validator: (value) => checkInput(value, "Login"),
-            controller: controllerLogin,
+            controller: _loginController,
             text: "Login",
           ),
           const SizedBox(height: 10),
           CustomInputField(
+            icon: LineIcons.envelope,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (input) =>
                 input!.isValidEmail() ? null : "Check your email",
-            controller: controllerEmail,
+            controller: _emailController,
             text: "Email",
           ),
           const SizedBox(height: 10),
           CustomInputField(
+            icon: LineIcons.key,
             validator: (value) => checkInput(value, "Password"),
-            controller: controllerPassword,
+            controller: _passwordController,
             text: "Password",
             obscureText: true,
           ),
@@ -155,12 +173,15 @@ class _LoginFormState extends State<LoginForm> {
           CustomAcceptButton(
             child: Center(
                 child: Text(
-              "Log in",
+              "Register",
               style: TextStyle(color: Theme.of(context).colorScheme.background),
             )),
             func: () {
               if (_key.currentState!.validate()) {
-                Get.snackbar("tada", "message");
+                context.read<AuthCubit>().register(User(
+                    login: _loginController.text,
+                    password: _passwordController.text,
+                    email: _emailController.text));
               } else {
                 Get.snackbar("User error", "enter correct values");
               }
@@ -171,14 +192,17 @@ class _LoginFormState extends State<LoginForm> {
             text: TextSpan(
               children: [
                 TextSpan(
-                    text: 'Doesn`t have an account? ',
+                    text: 'Already have an account? ',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary)),
                 TextSpan(
-                  text: 'Register',
+                  text: 'Log in',
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.primary),
-                  recognizer: TapGestureRecognizer()..onTap = () {},
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Get.to(LoginScreen());
+                    },
                 ),
               ],
             ),
@@ -188,4 +212,3 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 }
-
