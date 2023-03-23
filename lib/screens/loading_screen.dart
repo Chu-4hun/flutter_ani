@@ -5,6 +5,7 @@ import 'package:flutter_ani/screens/user_screen.dart';
 import 'package:get/get.dart';
 
 import '../http.dart';
+import '../utils/auth_interceptor.dart';
 import '../utils/token.dart';
 import '../utils/url.dart';
 
@@ -28,8 +29,13 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Loading", style: TextStyle(fontSize: 30),),
-            SizedBox(height: 40,),
+            Text(
+              "Loading",
+              style: TextStyle(fontSize: 30),
+            ),
+            SizedBox(
+              height: 40,
+            ),
             CircularProgressIndicator(),
           ],
         ),
@@ -48,7 +54,6 @@ Future changeScreen() async {
 }
 
 Future<bool> isAuthenticated() async {
-
   final token = Token(TokenType.refresh).read();
 
   if (token == '') return false;

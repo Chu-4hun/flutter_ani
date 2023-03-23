@@ -1,10 +1,39 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ani/models/user_info.dart';
 import 'package:flutter_ani/pages/settings_page.dart';
+import 'package:flutter_ani/screens/login_screen.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:line_icons/line_icons.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+import '../http.dart';
+import '../utils/token.dart';
+import '../utils/url.dart';
+
+class ProfilePage extends StatefulWidget {
+  ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final String? accesToken = Token(TokenType.access).read();
+
+  UserInfo? userInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    if (accesToken == null) {
+      Get.to(LoginScreen());
+    }
+    getUserProfile(accesToken!).then((value) {
+      userInfo = value;
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +44,7 @@ class ProfilePage extends StatelessWidget {
         onPressed: () {
           Get.to(SettingsPage());
         },
-        child:  Icon(LineIcons.cog),
+        child: Icon(LineIcons.cog),
       ),
       body: Center(
         child: Column(
@@ -23,17 +52,22 @@ class ProfilePage extends StatelessWidget {
             SizedBox(
               height: Get.height / 10,
             ),
-            CircleAvatar(
-              radius: (Get.height * Get.width) / 5000,
-              backgroundImage: const NetworkImage(
-                  "https://randomuser.me/api/portraits/lego/6.jpg"),
-                   ),
+            userInfo?.avatar != null
+                ? CircleAvatar(
+                    radius: Get.height / 5 / 2,
+                    backgroundImage: NetworkImage(userInfo?.avatar ?? ""),
+                  )
+                : CircleAvatar(
+                    radius: Get.height / 5 / 2,
+                    backgroundImage: AssetImage("res/loading.gif"),
+                  ),
             SizedBox(
               height: Get.height / 50,
             ),
             const Text(
               "Pedro288",
-              style: TextStyle(fontSize: 20, decorationStyle: TextDecorationStyle.wavy),
+              style: TextStyle(
+                  fontSize: 20, decorationStyle: TextDecorationStyle.wavy),
             ),
             SizedBox(
               height: Get.height / 45,
@@ -65,4 +99,20 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<UserInfo?> getUserProfile(String token) async {
+  int id = JwtDecoder.decode(token)["id"];
+  try {
+    final response = await dio.get(URL.profile.value + id.toString(),
+        options: Options(
+            headers: <String, String>{'Authorization': 'Bearer $token'}));
+
+    if (response.statusCode == 200 || response.statusCode == 202) {
+      return UserInfo.fromJson(response.data);
+    }
+  } on DioError catch (e) {
+    return null;
+  }
+  return null;
 }

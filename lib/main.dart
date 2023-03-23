@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ani/screens/login_screen.dart';
 import 'package:flutter_ani/screens/register_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -40,6 +41,6 @@ void main() async {
           // colorSchemeSeed: Colors.green,
           colorSchemeSeed: SystemTheme.accentColor.accent,
         ),
-        home: SplashScreen()),
+        home: LoginScreen()),
   ));
 }

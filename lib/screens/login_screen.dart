@@ -157,6 +157,10 @@ class LoginForm extends StatelessWidget {
                       _loginController.text,
                       _passwordController.text,
                     );
+                    context.read<AuthCubit>().getAccessToken(
+                      _loginController.text,
+                      _passwordController.text,
+                    );
               } else {
                 Get.snackbar("User error", "enter correct values");
               }

@@ -2,6 +2,17 @@ enum URL {
   accessToken('access/'),
   register('auth/register'),
   login('auth/login'),
+
+  profile("profile/"),
+  profileEdit("profile/edit"),
+  profileSearch("profile/search"),
+
+  watch("watch/"),
+  getAllReleases("watch/releases/popular/show"),
+  searchReleases("watch/releases/search"),
+
+  getAllDubOptionsForRelease("watch/release/"),
+
   addFriend('interact/friend/add/');
 
   final String value;

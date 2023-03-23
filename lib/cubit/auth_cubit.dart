@@ -29,13 +29,14 @@ class AuthCubit extends Cubit<AuthState> {
       logger.d('${response.statusCode}\n ${response.data}');
 
       if (response.statusCode == 200) {
+        Token(TokenType.refresh).store(response.data);
         emit(AuthSucces());
       }
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
         emit(AuthError(e.response?.data));
       } else {
-        emit(AuthError('Something went wrong'));
+        emit(AuthError('Something went wrong login'));
       }
     }
   }
@@ -45,8 +46,9 @@ class AuthCubit extends Cubit<AuthState> {
     final token = Token(TokenType.refresh).read();
 
     try {
-      final response = await dio.get(URL.login.value,
-          options: Options(headers: <String, String>{'Authorization': 'Bearer $token'}));
+      final response = await dio.get(URL.accessToken.value,
+          options: Options(
+              headers: <String, String>{'Authorization': 'Bearer $token'}));
       logger.d('${response.statusCode}\n ${response.data}');
 
       if (response.statusCode == 200) {
@@ -57,7 +59,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (e.response?.statusCode == 400) {
         emit(AuthError(e.response?.data));
       } else {
-        emit(AuthError('Something went wrong'));
+        emit(AuthError('Something went wrong access'));
       }
     }
   }
