@@ -41,6 +41,6 @@ void main() async {
           // colorSchemeSeed: Colors.green,
           colorSchemeSeed: SystemTheme.accentColor.accent,
         ),
-        home: LoginScreen()),
+        home: SplashScreen()),
   ));
 }

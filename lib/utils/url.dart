@@ -9,7 +9,7 @@ enum URL {
 
   watch("watch/"),
   getAllReleases("watch/releases/popular/show"),
-  searchReleases("watch/releases/search"),
+  searchReleases("watch/releases/search?request="),
 
   getAllDubOptionsForRelease("watch/release/"),
 

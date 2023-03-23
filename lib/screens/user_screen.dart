@@ -59,7 +59,7 @@ class _UserScreenState extends State<UserScreen> {
         NavigationElement(
             icon: const Icon(LineIcons.search),
             label: 'Search',
-            builder: () => const SearchPage()),
+            builder: () => SearchPage()),
         NavigationElement(
             icon: const Icon(LineIcons.user),
             label: 'Profile',
