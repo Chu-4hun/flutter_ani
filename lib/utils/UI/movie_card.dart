@@ -4,11 +4,10 @@ class MovieCard extends StatelessWidget {
   const MovieCard(
       {super.key,
       required this.onTap,
-      required this.url,
       this.title,
-      this.rating});
+      this.rating, required this.img});
   final VoidCallback onTap;
-  final String url;
+  final Image img;
   final String? title;
   final String? rating;
 
@@ -33,7 +32,7 @@ class MovieCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius:
                       BorderRadius.circular(borderRadius), // Image border
-                  child: Image.network(url, fit: BoxFit.cover),
+                  child: img,
                 ),
               ),
               const SizedBox(height: 10),

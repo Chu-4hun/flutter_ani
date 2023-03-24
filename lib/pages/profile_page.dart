@@ -26,9 +26,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    if (accesToken == null) {
-      Get.to(LoginScreen());
-    }
     getUserProfile(accesToken!).then((value) {
       userInfo = value;
       setState(() {});

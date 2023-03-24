@@ -6,7 +6,7 @@ class Release {
         required this.id,
         required this.releaseType,
         required this.releaseName,
-        this.releaseDate,
+         this.releaseDate,
         required this.rating,
         required this.minAge,
         required this.director,
@@ -20,8 +20,8 @@ class Release {
     int id;
     String releaseType;
     String releaseName;
-    dynamic releaseDate;
-    int rating;
+    String? releaseDate;
+    double rating;
     int minAge;
     String director;
     String author;

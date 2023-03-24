@@ -14,7 +14,7 @@ class TitlesPage extends StatelessWidget {
       maxItemsPerRow: 4,
       children: List.generate(
         100,
-        (index) => MovieCard(onTap: (){}, url: "https://animego.org/upload/anime/images/5ad264d801ac6117576552.jpg", title: "Крутой учитель Онидзука", rating: "9.6")
+        (index) => MovieCard(onTap: (){}, img: Image.network(fit: BoxFit.cover,"https://animego.org/upload/anime/images/5ad264d801ac6117576552.jpg"), title: "Крутой учитель Онидзука", rating: "9.6")
       ),
     );
   }
