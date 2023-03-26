@@ -50,8 +50,8 @@ class _UserScreenState extends State<UserScreen> {
             label: 'Home',
             builder: () => const HomePage()),
         NavigationElement(
-          icon: const Icon(LineIcons.heart),
-          label: 'Likes',
+          icon: const Icon(LineIcons.book),
+          label: 'Bookmarks',
           builder: () => const Text(
             'Likes',
             style: optionStyle,

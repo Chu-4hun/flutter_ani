@@ -1,13 +1,33 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'dart:convert';
 
-part 'user_info.freezed.dart';
-part 'user_info.g.dart';
+class UserInfo {
+    UserInfo({
+        required this.id,
+        required this.status,
+        required this.avatar,
+        required this.registerDate,
+    });
 
-@freezed
-class UserInfo with _$UserInfo {
-  factory UserInfo({int? id, String? avatar, String? status, String? date}) =
-      _UserInfo;
+    int id;
+    String status;
+    String avatar;
+    DateTime registerDate;
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) =>
-      _$UserInfoFromJson(json);
+    factory UserInfo.fromRawJson(String str) => UserInfo.fromJson(json.decode(str));
+
+    String toRawJson() => json.encode(toJson());
+
+    factory UserInfo.fromJson(Map<String, dynamic> json) => UserInfo(
+        id: json["id"],
+        status: json["status"],
+        avatar: json["avatar"],
+        registerDate: DateTime.parse(json["register_date"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "status": status,
+        "avatar": avatar,
+        "register_date": registerDate.toIso8601String(),
+    };
 }

@@ -1,14 +1,29 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'dart:convert';
 
-part 'user.freezed.dart';
-part 'user.g.dart';
+class User {
+    User({
+        required this.login,
+        required this.password,
+        required this.email,
+    });
 
-@freezed
-class User with _$User {
+    String login;
+    String password;
+    String email;
 
-  factory User({
-    String? login, String? password, String? email
-  }) = _User;
+    factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+    String toRawJson() => json.encode(toJson());
+
+    factory User.fromJson(Map<String, dynamic> json) => User(
+        login: json["login"],
+        password: json["password"],
+        email: json["email"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "login": login,
+        "password": password,
+        "email": email,
+    };
 }
