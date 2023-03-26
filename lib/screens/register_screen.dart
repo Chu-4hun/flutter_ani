@@ -180,7 +180,7 @@ class LoginForm extends StatelessWidget {
               if (_key.currentState!.validate()) {
                 context.read<AuthCubit>().register(User(
                     login: _loginController.text,
-                    password: _passwordController.text,
+                    password: _passwordController.text.toString(),
                     email: _emailController.text));
               } else {
                 Get.snackbar("User error", "enter correct values");

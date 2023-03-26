@@ -4,6 +4,8 @@ import 'package:flutter_ani/utils/token.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 
+import '../http.dart';
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -81,8 +83,9 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
             onTap: () {
+              dio.interceptors.clear();
               Token(TokenType.access).clearAll();
-              Get.off(LoginScreen());
+              Get.to(LoginScreen());
             },
           )
         ],

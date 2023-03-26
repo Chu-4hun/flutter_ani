@@ -30,6 +30,9 @@ class AuthCubit extends Cubit<AuthState> {
 
       if (response.statusCode == 200) {
         Token(TokenType.refresh).store(response.data);
+        Token(TokenType.access)
+            .store(await getAccessToken(response.data) ?? "");
+
         emit(AuthSucces());
       }
     } on DioError catch (e) {
@@ -41,9 +44,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> getAccessToken(String login, String password) async {
+  Future<String?> getAccessToken(String token) async {
     emit(AuthLoading());
-    final token = Token(TokenType.refresh).read();
 
     try {
       final response = await dio.get(URL.accessToken.value,
@@ -52,16 +54,18 @@ class AuthCubit extends Cubit<AuthState> {
       logger.d('${response.statusCode}\n ${response.data}');
 
       if (response.statusCode == 200) {
-        Token(TokenType.access).store(response.data);
         emit(AuthSucces());
+        return response.data;
       }
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {
         emit(AuthError(e.response?.data));
       } else {
-        emit(AuthError('Something went wrong access'));
+        emit(
+            AuthError('Something went wrong access ${e.response?.statusCode}'));
       }
     }
+    return null;
   }
 
   Future<void> register(User user) async {

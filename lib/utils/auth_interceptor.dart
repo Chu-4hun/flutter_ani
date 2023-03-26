@@ -21,8 +21,7 @@ class AuthInterceptor extends Interceptor {
       options.headers.remove("requiresToken"); //remove the auxiliary header
       return handler.next(options);
     }
-
-    // get tokens from local storage, you can use Hive or flutter_secure_storage
+    
     final accessToken = Token(TokenType.access).read();
     final refreshToken = Token(TokenType.refresh).read();
 
@@ -31,15 +30,12 @@ class AuthInterceptor extends Interceptor {
 
       // create custom dio error
       options.extra["tokenErrorType"] =
-          "tokenNotFound"; // I use enum type, you can chage it to string
+          "tokenNotFound";
       final error =
           DioError(requestOptions: options, type: DioErrorType.cancel);
       return handler.reject(error);
     }
 
-    // check if tokens have already expired or not
-    // I use jwt_decoder package
-    // Note: ensure your tokens has "exp" claim
     final accessTokenHasExpired = JwtDecoder.isExpired(accessToken);
     final refreshTokenHasExpired = JwtDecoder.isExpired(refreshToken);
 
@@ -88,11 +84,7 @@ class AuthInterceptor extends Interceptor {
 
   void _performLogout(Dio dio) {
     _dio.interceptors.clear();
-
-    Token(TokenType.access).clearAll(); // remove token from local storage
-
-    // back to login page without using context
-    // check this https://stackoverflow.com/a/53397266/9101876
+    Token(TokenType.access).clearAll(); 
     Get.to(LoginScreen());
 
   }
@@ -101,13 +93,12 @@ class AuthInterceptor extends Interceptor {
   Future<bool> _regenerateAccessToken() async {
     try {
       var dio =
-          Dio(); // should create new dio instance because the request interceptor is being locked
-
+          Dio(); 
       // get refresh token from local storage
       final refreshToken = Token(TokenType.refresh).read();
 
       // make request to server to get the new access token from server using refresh token
-      final response = await dio.post(
+      final response = await dio.get(
         URL.accessToken.value,
         options: Options(headers: {"Authorization": "Bearer $refreshToken"}),
       );

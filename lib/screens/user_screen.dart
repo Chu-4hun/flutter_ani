@@ -32,14 +32,15 @@ class _UserScreenState extends State<UserScreen> {
 
 @override
   void initState() {
-    dio.interceptors.addAll([
-      AuthInterceptor(dio), // add this line before LogInterceptor
-      LogInterceptor(),
-    ]);
+    
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
+    dio.interceptors.addAll([
+      AuthInterceptor(dio), // add this line before LogInterceptor
+      LogInterceptor(),
+    ]);
     return FlutterAdaptiveNavigationScaffold(
       labelDisplayType: LabelDisplayType
           .all, // Optional. Determines which labels to display on Tablets and Mobile screens. Ignored on desktops. Defaults to showing only the selected labels.
