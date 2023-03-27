@@ -5,24 +5,29 @@ import 'package:flutter_ani/utils/url.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:logger/logger.dart';
+
+import '../http.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio _dio;
   final _localStorage =
       GetStorage(); // helper class to access your local storage
 
+  final logger = Logger();
+
   AuthInterceptor(this._dio);
 
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    if (options.headers["requiresToken"] == false) {
+    if (options.headers["requiresToken"] == "false") {
       // if the request doesn't need token, then just continue to the next interceptor
       options.headers.remove("requiresToken"); //remove the auxiliary header
       return handler.next(options);
     }
 
-    final accessToken = Token(TokenType.access).read();
+    String? accessToken = Token(TokenType.access).read();
     final refreshToken = Token(TokenType.refresh).read();
 
     if (accessToken == null || refreshToken == null) {
@@ -56,11 +61,13 @@ class AuthInterceptor extends Interceptor {
 
     if (_refreshed) {
       // add access token to the request header
+      accessToken = Token(TokenType.access).read(); ////
       options.headers["Authorization"] = "Bearer $accessToken";
       return handler.next(options);
     } else {
       // create custom dio error
       options.extra["tokenErrorType"] = "failedToRegenerateAccessToken";
+
       final error =
           DioError(requestOptions: options, type: DioErrorType.cancel);
       return handler.reject(error);
@@ -85,7 +92,7 @@ class AuthInterceptor extends Interceptor {
   }
 
   void _performLogout(Dio dio) {
-    _dio.interceptors.clear();
+    dio.interceptors.clear();
     Token(TokenType.access).clearAll();
     Get.off(() => LoginScreen());
   }
@@ -93,7 +100,6 @@ class AuthInterceptor extends Interceptor {
   /// return true if it is successfully regenerate the access token
   Future<bool> _regenerateAccessToken() async {
     try {
-      var dio = Dio();
       // get refresh token from local storage
       final refreshToken = Token(TokenType.refresh).read();
 
@@ -103,7 +109,9 @@ class AuthInterceptor extends Interceptor {
         options: Options(headers: {"Authorization": "Bearer $refreshToken"}),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 202) {
         final newAccessToken = response
             .data["accessToken"]; // parse data based on your JSON structure
         Token(TokenType.access).store(newAccessToken); // save to local storage
@@ -116,9 +124,7 @@ class AuthInterceptor extends Interceptor {
         print(response.statusCode);
         return false;
       }
-    } on DioError {
-      return false;
-    } catch (e) {
+    } on DioError catch (e) {
       return false;
     }
   }

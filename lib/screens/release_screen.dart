@@ -1,10 +1,17 @@
+import 'dart:async';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_ani/controllers/video_options_for_episode_controller.dart';
 import 'package:flutter_ani/models/dub.dart';
 import 'package:flutter_ani/models/episodes.dart';
 import 'package:flutter_ani/models/release.dart';
+import 'package:flutter_ani/models/stream_option.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_meedu_videoplayer/meedu_player.dart';
 import 'package:get/get.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../cubit/release_cubit.dart';
 
@@ -19,21 +26,64 @@ class ReleaseView extends StatefulWidget {
 }
 
 class _ReleaseViewState extends State<ReleaseView> {
-  List<Dub> dubs = List.empty();
-  List<Episode> episodes = List.empty();
+  final _meeduPlayerController = MeeduPlayerController(
+    controlsStyle: ControlsStyle.primary,
+    screenManager:
+        const ScreenManager(forceLandScapeInFullscreen: false, orientations: [
+      DeviceOrientation.portraitUp,
+    ]),
+  );
+
+  List<Dub> dubs = List.empty(growable: true);
+  List<Episode> episodes = List.empty(growable: true);
+  List<StreamOption> streamOptions = List.empty(growable: true);
+
+  Episode? selectedEpisode;
+  Dub? selectedDub;
+  StreamOption? selectedStreamOption;
+  String streamURL = "";
+
+  bool isFullscreen = false;
 
   @override
   void initState() {
-    context.read<ReleaseCubit>().getDubs(widget.release.id);
     super.initState();
+    context.read<ReleaseCubit>().getDubs(widget.release.id);
+    Wakelock.enable();
+    _meeduPlayerController.onFullscreenChanged.listen(
+      (bool isFullScr) {
+        setState(() {
+          isFullscreen = isFullScr;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    Wakelock.disable();
+    _meeduPlayerController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _setDataSource() async {
+    await _meeduPlayerController.setDataSource(
+      DataSource(
+        type: DataSourceType.network,
+        source: streamURL,
+      ),
+      autoplay: false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.release.releaseName),
-      ),
+      appBar: isFullscreen
+          ? null
+          : AppBar(
+              title: Text(widget.release.releaseName),
+            ),
       body: BlocConsumer<ReleaseCubit, ReleaseState>(
         listener: (context, state) async {
           if (state is ReleaseInfo) {
@@ -49,7 +99,7 @@ class _ReleaseViewState extends State<ReleaseView> {
         },
         builder: (context, state) {
           return ListView(
-            padding: EdgeInsets.all(20),
+            padding: isFullscreen ? null : const EdgeInsets.all(20),
             shrinkWrap: true,
             children: [
               Hero(
@@ -88,17 +138,23 @@ class _ReleaseViewState extends State<ReleaseView> {
                 direction: Axis.horizontal,
                 children: List.generate(
                   dubs.length,
-                  ((index) => ActionChip(
-                      onPressed: () {
-                        context.read<ReleaseCubit>().getEpisodesByDub(
-                            widget.release.id, dubs[index].id);
-                      },
-                      label: Text(dubs[index].name))),
+                  ((index) => ChoiceChip(
+                        onSelected: (bool isSelected) {
+                          selectedDub = dubs[index];
+                          context.read<ReleaseCubit>().getEpisodesByDub(
+                              widget.release.id, dubs[index].id);
+                        },
+                        label: Text(dubs[index].name),
+                        selected: dubs[index] == selectedDub,
+                      )),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Container(height: 1,color: Theme.of(context).colorScheme.secondary, ),
+                child: Container(
+                  height: 1,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
               Wrap(
                 spacing: 10,
@@ -106,12 +162,40 @@ class _ReleaseViewState extends State<ReleaseView> {
                 direction: Axis.horizontal,
                 children: List.generate(
                   episodes.length,
-                  ((index) => ActionChip(
-                      onPressed: () {
-                      },
-                      label: Text(episodes[index].epName))),
+                  ((index) => ChoiceChip(
+                        pressElevation: 5,
+                        selectedShadowColor:
+                            Theme.of(context).colorScheme.primary,
+                        onSelected: (bool isSelected) async {
+                          selectedEpisode = episodes[index];
+                          var options = await getStreamOptions(episodes[index]);
+                          streamOptions = options ?? List.empty(growable: true);
+                          selectedStreamOption = streamOptions[0];
+                          streamURL = streamOptions[0].src;
+                          _setDataSource();
+                          setState(() {});
+                        },
+                        label: Text(episodes[index].epName),
+                        selected: episodes[index] == selectedEpisode,
+                      )),
                 ),
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Container(
+                  height: 1,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: MeeduVideoPlayer(
+                  controller: _meeduPlayerController,
+                  bottomRight: (context, controller, responsive) {
+                    return ActionChip(label: Text(selectedStreamOption?.name??"none"),);
+                  },
+                ),
+              ),
             ],
           );
         },

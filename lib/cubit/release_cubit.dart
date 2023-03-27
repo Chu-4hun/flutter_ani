@@ -20,7 +20,7 @@ class ReleaseCubit extends Cubit<ReleaseState> {
     try {
       final response =
           await dio.get(URL.getAllDubOptionsForRelease.value + id.toString());
-      logger.d('${response.statusCode}\n ${response.data}');
+      logger.d('${response.statusCode}');
       if (response.statusCode == 202) {
         List<Dub> dubs = (response.data["dubs"] as List)
             .map((i) => Dub.fromJson(i))
@@ -40,7 +40,7 @@ class ReleaseCubit extends Cubit<ReleaseState> {
     emit(ReleaseLoading());
     try {
       final response = await dio.get("${URL.getAllDubOptionsForRelease.value}$release_id/$dub_id");
-      logger.d('${response.statusCode}\n ${response.data}');
+      logger.d('${response.statusCode}');
       if (response.statusCode == 202) {
         List<Episode> episodes = (response.data as List)
             .map((i) => Episode.fromJson(i))

@@ -37,10 +37,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.0.0
-  video_player_web_hls: ^1.0.0+1
-  video_player: ^2.5.1
-  appinio_video_player: ^1.2.0
-  chewie: ^1.3.6
   get: ^4.6.5
   google_nav_bar: ^5.0.6
   line_icons: ^2.0.1
@@ -54,6 +50,11 @@ dependencies:
   logger: ^1.3.0
   jwt_decoder: ^2.0.1
   expandable: ^5.0.1
+  better_player_hls: ^0.0.84
+  flutter_meedu_videoplayer: ^3.2.0
+  wakelock: ^0.6.2
+
+  
   
 
 dev_dependencies:
