@@ -8,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:system_theme/system_theme.dart';
 
 import 'cubit/auth_cubit.dart';
+import 'cubit/release_cubit.dart';
 import 'screens/loading_screen.dart';
 
 void main() async {
@@ -24,6 +25,9 @@ void main() async {
       ),
       BlocProvider(
         create: (context) => SearchCubit(),
+      ),
+      BlocProvider(
+        create: (context) => ReleaseCubit(),
       ),
     ],
     child: GetMaterialApp(

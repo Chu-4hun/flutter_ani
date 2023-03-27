@@ -21,7 +21,7 @@ class AuthInterceptor extends Interceptor {
       options.headers.remove("requiresToken"); //remove the auxiliary header
       return handler.next(options);
     }
-    
+
     final accessToken = Token(TokenType.access).read();
     final refreshToken = Token(TokenType.refresh).read();
 
@@ -29,8 +29,7 @@ class AuthInterceptor extends Interceptor {
       _performLogout(_dio);
 
       // create custom dio error
-      options.extra["tokenErrorType"] =
-          "tokenNotFound";
+      options.extra["tokenErrorType"] = "tokenNotFound";
       final error =
           DioError(requestOptions: options, type: DioErrorType.cancel);
       return handler.reject(error);
@@ -69,12 +68,15 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 403 || err.response?.statusCode == 401) {
       // for some reasons the token can be invalidated before it is expired by the backend.
       // then we should navigate the user back to login page
-
-      _performLogout(_dio);
+      if (await _regenerateAccessToken()) {
+        return handler.next(err);
+      } else {
+        _performLogout(_dio);
+      }
 
       err.requestOptions.extra["tokenErrorType"] = "invalidAccessToken";
     }
@@ -84,16 +86,14 @@ class AuthInterceptor extends Interceptor {
 
   void _performLogout(Dio dio) {
     _dio.interceptors.clear();
-    Token(TokenType.access).clearAll(); 
-    Get.to(LoginScreen());
-
+    Token(TokenType.access).clearAll();
+    Get.off(() => LoginScreen());
   }
 
   /// return true if it is successfully regenerate the access token
   Future<bool> _regenerateAccessToken() async {
     try {
-      var dio =
-          Dio(); 
+      var dio = Dio();
       // get refresh token from local storage
       final refreshToken = Token(TokenType.refresh).read();
 

@@ -25,10 +25,12 @@ class AuthCubit extends Cubit<AuthState> {
 
     try {
       final response = await dio.get(URL.login.value,
-          options: Options(headers: <String, String>{'authorization': auth}));
+          options: Options(headers: <String, String>{
+            'authorization': auth,
+          }));
       logger.d('${response.statusCode}\n ${response.data}');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 202) {
         Token(TokenType.refresh).store(response.data);
         Token(TokenType.access)
             .store(await getAccessToken(response.data) ?? "");
@@ -39,7 +41,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (e.response?.statusCode == 400) {
         emit(AuthError(e.response?.data));
       } else {
-        emit(AuthError('Something went wrong login'));
+        emit(AuthError('Something went wrong on login'));
       }
     }
   }

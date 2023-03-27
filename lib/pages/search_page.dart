@@ -1,6 +1,4 @@
-import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/cubit/search_cubit.dart';
 import 'package:flutter_ani/screens/release_screen.dart';
@@ -9,9 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
-import '../http.dart';
 import '../models/release.dart';
-import '../utils/url.dart';
 
 class SearchPage extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();

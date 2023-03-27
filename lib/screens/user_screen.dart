@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_navigation/flutter_adaptive_navigation.dart';
+import 'package:flutter_ani/pages/bookmarks_page.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../http.dart';
@@ -30,17 +31,18 @@ class _UserScreenState extends State<UserScreen> {
     ProfilePage()
   ];
 
-@override
+  @override
   void initState() {
-    
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     dio.interceptors.addAll([
       AuthInterceptor(dio), // add this line before LogInterceptor
       LogInterceptor(),
     ]);
+
     return FlutterAdaptiveNavigationScaffold(
       labelDisplayType: LabelDisplayType
           .all, // Optional. Determines which labels to display on Tablets and Mobile screens. Ignored on desktops. Defaults to showing only the selected labels.
@@ -52,10 +54,7 @@ class _UserScreenState extends State<UserScreen> {
         NavigationElement(
           icon: const Icon(LineIcons.book),
           label: 'Bookmarks',
-          builder: () => const Text(
-            'Likes',
-            style: optionStyle,
-          ),
+          builder: () => BookmarksPage()
         ),
         NavigationElement(
             icon: const Icon(LineIcons.search),
