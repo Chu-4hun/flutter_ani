@@ -26,4 +26,20 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
   
+
+  Future<void> get_popular(int cursor) async {
+    emit(SearchLoading());
+    try {
+      final response =
+          await dio.get("${URL.getAllReleases.value}?cursor=$cursor");
+      List<Release> releases;
+      if (response.statusCode == 202) {
+        releases =
+            (response.data as List).map((i) => Release.fromJson(i)).toList();
+        emit(SearchSucces<Release>(releases));
+      }
+    } on DioError catch (e) {
+      emit(SearchError("No releases found ( ´･･)ﾉ(._.`)"));
+    }
+  }
 }

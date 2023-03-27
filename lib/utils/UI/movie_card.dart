@@ -7,7 +7,7 @@ class MovieCard extends StatelessWidget {
       this.title,
       this.rating, required this.img});
   final VoidCallback onTap;
-  final Image img;
+  final Widget img;
   final String? title;
   final String? rating;
 

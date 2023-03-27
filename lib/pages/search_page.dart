@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/cubit/search_cubit.dart';
+import 'package:flutter_ani/screens/release_screen.dart';
 import 'package:flutter_ani/utils/UI/movie_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -12,10 +13,8 @@ import '../http.dart';
 import '../models/release.dart';
 import '../utils/url.dart';
 
-
 class SearchPage extends StatelessWidget {
-
- final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   List<Release>? releases;
 
@@ -45,7 +44,8 @@ class SearchPage extends StatelessWidget {
                   height: 45,
                   child: TextField(
                     controller: _searchController,
-                    onEditingComplete: () async {await context
+                    onEditingComplete: () async {
+                      await context
                           .read<SearchCubit>()
                           .search_releases(_searchController.text);
                     },
@@ -72,22 +72,43 @@ class SearchPage extends StatelessWidget {
                 ),
               ),
             ],
-            body: ResponsiveGridList(
-              horizontalGridMargin: 10,
-              verticalGridMargin: 10,
-              minItemWidth: 150,
-              maxItemsPerRow: 4,
-              children: List.generate(
-                  releases?.length ?? 0,
-                  (index) => MovieCard(
-                      onTap: () {},
-                      img: releases![index].img == null
-                          ? Image.asset("res/loading.gif", fit: BoxFit.cover)
-                          : Image.network(releases![index].img,
-                              fit: BoxFit.cover),
-                      title: releases![index].releaseName,
-                      rating: releases![index].rating.toString())),
-            ),
+            body: releases == null
+                ? const Center(
+                    child: Text(
+                      "No releases found",
+                      style: TextStyle(fontSize: 30),
+                    ),
+                  )
+                : ResponsiveGridList(
+                    horizontalGridMargin: 10,
+                    verticalGridMargin: 10,
+                    minItemWidth: 150,
+                    maxItemsPerRow: 4,
+                    children: List.generate(
+                        releases?.length ?? 0,
+                        (index) => MovieCard(
+                            onTap: () {
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (context) =>
+                              //         ReleaseView(release: releases![index],herotag: "release_${releases![index]}")));
+                              Get.to(ReleaseView(
+                                  release: releases![index],
+                                  herotag: "release_$index"));
+                            },
+                            img: Hero(
+                              tag: "release_$index",
+                              child: Image.network(
+                                releases![index].img,
+                                fit: BoxFit.cover,
+                                // loadingBuilder: (context, size, widget) {
+                                //   return Image.asset("res/loading.gif",
+                                //       fit: BoxFit.cover);
+                                // },
+                              ),
+                            ),
+                            title: releases![index].releaseName,
+                            rating: releases![index].rating.toString())),
+                  ),
           );
         },
       ),

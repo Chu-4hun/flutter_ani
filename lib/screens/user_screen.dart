@@ -48,7 +48,7 @@ class _UserScreenState extends State<UserScreen> {
         NavigationElement(
             icon: const Icon(LineIcons.home),
             label: 'Home',
-            builder: () => const HomePage()),
+            builder: () => HomePage()),
         NavigationElement(
           icon: const Icon(LineIcons.book),
           label: 'Bookmarks',
