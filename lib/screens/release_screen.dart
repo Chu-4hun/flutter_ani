@@ -1,6 +1,7 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/models/dub.dart';
+import 'package:flutter_ani/models/episodes.dart';
 import 'package:flutter_ani/models/release.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ class ReleaseView extends StatefulWidget {
 
 class _ReleaseViewState extends State<ReleaseView> {
   List<Dub> dubs = List.empty();
+  List<Episode> episodes = List.empty();
 
   @override
   void initState() {
@@ -42,8 +44,7 @@ class _ReleaseViewState extends State<ReleaseView> {
             Get.snackbar('Ошибка', state.error);
           }
           if (state is ReleaseSucces) {
-            Get.snackbar('ура', state.result.toString());
-            // Get.off(() => UserScreen());
+            episodes = state.result.cast<Episode>();
           }
         },
         builder: (context, state) {
@@ -88,7 +89,27 @@ class _ReleaseViewState extends State<ReleaseView> {
                 children: List.generate(
                   dubs.length,
                   ((index) => ActionChip(
-                      onPressed: () {}, label: Text(dubs[index].name))),
+                      onPressed: () {
+                        context.read<ReleaseCubit>().getEpisodesByDub(
+                            widget.release.id, dubs[index].id);
+                      },
+                      label: Text(dubs[index].name))),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Container(height: 1,color: Theme.of(context).colorScheme.secondary, ),
+              ),
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                direction: Axis.horizontal,
+                children: List.generate(
+                  episodes.length,
+                  ((index) => ActionChip(
+                      onPressed: () {
+                      },
+                      label: Text(episodes[index].epName))),
                 ),
               )
             ],
