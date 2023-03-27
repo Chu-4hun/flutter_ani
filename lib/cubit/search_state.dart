@@ -3,18 +3,18 @@ part of 'search_cubit.dart';
 @immutable
 abstract class SearchState {}
 
-class AuthInitial extends SearchState {}
+class SearchInitial extends SearchState {}
 
-class AuthSucces extends SearchState {
-  final List<Release> releases;
+class SearchSucces<T> extends SearchState {
+  final List<T> result;
 
-  AuthSucces(this.releases);
+  SearchSucces(this.result);
 }
 
-class AuthLoading extends SearchState {}
+class SearchLoading extends SearchState {}
 
-class AuthError extends SearchState {
+class SearchError extends SearchState {
   final String error;
 
-  AuthError(this.error);
+  SearchError(this.error);
 }

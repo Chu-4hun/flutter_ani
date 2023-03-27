@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ani/cubit/search_cubit.dart';
 import 'package:flutter_ani/screens/login_screen.dart';
 import 'package:flutter_ani/screens/register_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +21,9 @@ void main() async {
     providers: [
       BlocProvider(
         create: (context) => AuthCubit(),
+      ),
+      BlocProvider(
+        create: (context) => SearchCubit(),
       ),
     ],
     child: GetMaterialApp(
