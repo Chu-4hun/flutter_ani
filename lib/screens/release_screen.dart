@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_meedu_videoplayer/meedu_player.dart';
 import 'package:get/get.dart';
 import 'package:wakelock/wakelock.dart';
+import 'dart:io' show Platform;
 
 import '../cubit/release_cubit.dart';
 
@@ -49,7 +50,9 @@ class _ReleaseViewState extends State<ReleaseView> {
   void initState() {
     super.initState();
     context.read<ReleaseCubit>().getDubs(widget.release.id);
-    Wakelock.enable();
+    if (!Platform.isLinux) {
+      Wakelock.enable();
+    }
     _meeduPlayerController.onFullscreenChanged.listen(
       (bool isFullScr) {
         setState(() {
@@ -61,8 +64,10 @@ class _ReleaseViewState extends State<ReleaseView> {
 
   @override
   void dispose() {
-    Wakelock.disable();
     _meeduPlayerController.dispose();
+    if (!Platform.isLinux) {
+      Wakelock.disable();
+    }
     super.dispose();
   }
 
@@ -192,7 +197,9 @@ class _ReleaseViewState extends State<ReleaseView> {
                 child: MeeduVideoPlayer(
                   controller: _meeduPlayerController,
                   bottomRight: (context, controller, responsive) {
-                    return ActionChip(label: Text(selectedStreamOption?.name??"none"),);
+                    return ActionChip(
+                      label: Text(selectedStreamOption?.name ?? "none"),
+                    );
                   },
                 ),
               ),
