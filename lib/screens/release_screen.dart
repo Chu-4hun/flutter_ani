@@ -64,7 +64,10 @@ class _ReleaseViewState extends State<ReleaseView> {
 
   @override
   void dispose() {
-    _meeduPlayerController.dispose();
+    try {
+      _meeduPlayerController.dispose();
+    } catch (e) {}
+    
     if (!Platform.isLinux) {
       Wakelock.disable();
     }
