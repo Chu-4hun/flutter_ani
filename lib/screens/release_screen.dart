@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,19 @@ class _ReleaseViewState extends State<ReleaseView> {
     }
     _meeduPlayerController.onFullscreenChanged.listen(
       (bool isFullScr) {
+        if (isFullScr) {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.landscapeRight,
+            DeviceOrientation.landscapeLeft,
+          ]);
+        } else {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.landscapeRight,
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+          ]);
+        }
         setState(() {
           isFullscreen = isFullScr;
         });
@@ -64,13 +78,11 @@ class _ReleaseViewState extends State<ReleaseView> {
 
   @override
   void dispose() {
-    try {
-      _meeduPlayerController.dispose();
-    } catch (e) {}
-    
+    _meeduPlayerController.dispose();
     if (!Platform.isLinux) {
       Wakelock.disable();
     }
+
     super.dispose();
   }
 

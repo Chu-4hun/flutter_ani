@@ -44,10 +44,19 @@ Future<List<StreamOption>?> getStreamOptions(Episode episode) async {
   return null;
 }
 
-String decodeKodikSrc(String input) {
-  input = input.split('').reversed.join();
-  if (input.length % 4 > 0) {
-    input += '=' * (4 - input.length % 4); // as suggested by Albert221
-  }
-  return "https:${utf8.decode(base64.decode(input))}";
+String decodeKodikSrc(String str) {
+  final zCharCode = 'Z'.codeUnitAt(0);
+
+  String modifiedStr = utf8.decode(base64.decode(
+      base64.normalize(str.replaceAllMapped(RegExp(r'[a-zA-Z]'), (match) {
+    int eCharCode = match.group(0)!.codeUnitAt(0);
+    int newCharCode =
+        (eCharCode <= zCharCode ? 90 : 122) >= (eCharCode = eCharCode + 13)
+            ? eCharCode
+            : eCharCode - 26;
+
+    return String.fromCharCode(newCharCode);
+  }))));
+
+  return "https:$modifiedStr";
 }
