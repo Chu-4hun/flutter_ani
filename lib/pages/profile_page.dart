@@ -61,9 +61,9 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(
               height: Get.height / 50,
             ),
-            const Text(
-              "Pedro288",
-              style: TextStyle(
+            Text(
+             "Status: ${userInfo?.status ?? "Pedro288"}",
+              style: const TextStyle(
                   fontSize: 20, decorationStyle: TextDecorationStyle.wavy),
             ),
             SizedBox(

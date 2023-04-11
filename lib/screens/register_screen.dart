@@ -23,7 +23,7 @@ class RegisterScreen extends StatelessWidget {
           if (state is AuthError) {
             Get.snackbar('Ошибка', state.error);
           }
-          if (state is AuthSucces) {
+          if (state is RegisterSucces) {
             Get.off(() => LoginScreen());
           }
         },
@@ -53,14 +53,14 @@ class RegisterScreen extends StatelessWidget {
                                 child: Column(
                                   children: const [
                                     Text(
-                                      "Welcome",
+                                      "Register",
                                       style: TextStyle(fontSize: 60),
                                     ),
                                     SizedBox(
                                       height: 10,
                                     ),
                                     Text(
-                                      "Register",
+                                      "Welcome",
                                       style: TextStyle(fontSize: 30),
                                     ),
                                   ],
@@ -104,11 +104,11 @@ class RegisterScreen extends StatelessWidget {
                           child: Column(
                             children: const [
                               Text(
-                                "Welcome",
+                                "Register",
                                 style: TextStyle(fontSize: 60),
                               ),
                               Text(
-                                "Register",
+                                "Welcome",
                                 style: TextStyle(fontSize: 25),
                               ),
                             ],

@@ -49,11 +49,11 @@ class LoginScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   Text(
-                                    "Welcome",
+                                    "Log in",
                                     style: TextStyle(fontSize: 60),
                                   ),
                                   Text(
-                                    "Log in",
+                                    "Welcome",
                                     style: TextStyle(fontSize: 25),
                                   ),
                                 ],
@@ -96,11 +96,11 @@ class LoginScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                "Welcome",
+                                "Log in",
                                 style: TextStyle(fontSize: 60),
                               ),
                               Text(
-                                "Log in",
+                                "Welcome",
                                 style: TextStyle(fontSize: 25),
                               ),
                             ],

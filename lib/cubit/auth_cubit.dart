@@ -77,7 +77,7 @@ class AuthCubit extends Cubit<AuthState> {
       final response = await dio.post(URL.register.value, data: user.toJson());
       logger.d('${response.statusCode}\n ${response.data}');
       if (response.statusCode == 200) {
-        emit(AuthSucces());
+        emit(RegisterSucces());
       }
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {

@@ -7,6 +7,8 @@ class AuthInitial extends AuthState {}
 
 class AuthSucces extends AuthState {}
 
+class RegisterSucces extends AuthState {}
+
 class AuthLoading extends AuthState {}
 
 class AuthError extends AuthState {

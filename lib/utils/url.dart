@@ -21,4 +21,4 @@ enum URL {
 }
 
 // ignore: constant_identifier_names
-const String BASE_URL = 'http://192.168.226.80:8090/api/v1/';
+const String BASE_URL = 'http://192.168.1.78:8090/api/v1/';
