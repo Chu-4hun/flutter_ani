@@ -41,7 +41,8 @@ class AuthCubit extends Cubit<AuthState> {
       if (e.response?.statusCode == 400) {
         emit(AuthError(e.response?.data));
       } else {
-        emit(AuthError('Something went wrong on login'));
+        emit(AuthError(
+            'Something went wrong on login ${e.response?.statusCode}'));
       }
     }
   }
