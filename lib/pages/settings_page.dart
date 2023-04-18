@@ -36,45 +36,45 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
-          ListTile(
-            title: const Text('Language'),
-            trailing: DropdownButton(
-              value: 'English',
-              items: [
-                DropdownMenuItem(
-                  child: const Text('English'),
-                  value: 'English',
-                ),
-                DropdownMenuItem(
-                  child: const Text('Spanish'),
-                  value: 'Spanish',
-                ),
-                DropdownMenuItem(
-                  child: const Text('French'),
-                  value: 'French',
-                ),
-              ],
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            title: const Text('Notifications'),
-            trailing: Switch(
-              value: true,
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            title: const Text('Location'),
-            trailing: Switch(
-              value: true,
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            title: const Text('About'),
-            trailing: const Icon(Icons.arrow_forward_ios),
-          ),
+          // ListTile(
+          //   title: const Text('Language'),
+          //   trailing: DropdownButton(
+          //     value: 'English',
+          //     items: [
+          //       DropdownMenuItem(
+          //         child: const Text('English'),
+          //         value: 'English',
+          //       ),
+          //       DropdownMenuItem(
+          //         child: const Text('Spanish'),
+          //         value: 'Spanish',
+          //       ),
+          //       DropdownMenuItem(
+          //         child: const Text('French'),
+          //         value: 'French',
+          //       ),
+          //     ],
+          //     onChanged: (value) {},
+          //   ),
+          // ),
+          // ListTile(
+          //   title: const Text('Notifications'),
+          //   trailing: Switch(
+          //     value: true,
+          //     onChanged: (value) {},
+          //   ),
+          // ),
+          // ListTile(
+          //   title: const Text('Location'),
+          //   trailing: Switch(
+          //     value: true,
+          //     onChanged: (value) {},
+          //   ),
+          // ),
+          // ListTile(
+          //   title: const Text('About'),
+          //   trailing: const Icon(Icons.arrow_forward_ios),
+          // ),
           ListTile(
             leading: const Icon(Icons.logout),
             iconColor: Theme.of(context).colorScheme.error,
