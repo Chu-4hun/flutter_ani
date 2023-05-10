@@ -10,6 +10,13 @@ class SearchSucces<T> extends SearchState {
 
   SearchSucces(this.result);
 }
+class GetPopularSucces<T> extends SearchState {
+  final List<T> result;
+
+  GetPopularSucces(this.result);
+}
+
+class EmptySearch extends SearchState {}
 
 class SearchLoading extends SearchState {}
 

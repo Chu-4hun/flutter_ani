@@ -25,7 +25,6 @@ class SearchCubit extends Cubit<SearchState> {
       emit(SearchError("No releases found ( ´･･)ﾉ(._.`)"));
     }
   }
-  
 
   Future<void> get_popular(int cursor) async {
     emit(SearchLoading());
@@ -36,7 +35,9 @@ class SearchCubit extends Cubit<SearchState> {
       if (response.statusCode == 202) {
         releases =
             (response.data as List).map((i) => Release.fromJson(i)).toList();
-        emit(SearchSucces<Release>(releases));
+        if (releases.isEmpty) emit(EmptySearch());
+
+        emit(GetPopularSucces<Release>(releases));
       }
     } on DioError catch (e) {
       emit(SearchError("No releases found ( ´･･)ﾉ(._.`)"));

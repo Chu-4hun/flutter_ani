@@ -15,12 +15,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
+  final _scrollController = ScrollController();
 
-  List<Release>? releases;
+  List<Release> releases = List.empty();
+  List<Widget>? titles;
+
+  int cursor = 0;
+  bool _isNeedsToLoadMore = true;
+
+  _scrollListener() {
+    if (_scrollController.position.maxScrollExtent ==
+        _scrollController.offset) {
+      if (!_isNeedsToLoadMore) return;
+      print("LOAD");
+      cursor += 20;
+      print("PAGE NUMBER $cursor");
+      context.read<SearchCubit>().get_popular(cursor);
+    }
+  }
+
   @override
   void initState() {
-    context.read<SearchCubit>().get_popular(0);
     super.initState();
+    _scrollController.addListener(_scrollListener);
+    context.read<SearchCubit>().get_popular(cursor);
   }
 
   @override
@@ -33,6 +51,14 @@ class _HomePageState extends State<HomePage> {
           }
           if (state is SearchSucces) {
             releases = state.result.cast<Release>();
+            _isNeedsToLoadMore = true;
+          }
+          if (state is GetPopularSucces) {
+            releases += state.result.cast<Release>();
+            _isNeedsToLoadMore = true;
+          }
+          if (state is EmptySearch) {
+            _isNeedsToLoadMore = false;
           }
         },
         builder: (context, state) {
@@ -61,14 +87,16 @@ class _HomePageState extends State<HomePage> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(20.0)),
                         borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
+                          width: 1.5,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(20.0)),
                         borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.secondary),
+                            width: 1.5,
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                       labelText: "Search",
                       hintText: 'Enter a search term',
@@ -77,28 +105,42 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ],
-            body: ResponsiveGridList(
-              horizontalGridMargin: 10,
-              verticalGridMargin: 10,
-              minItemWidth: 150,
-              maxItemsPerRow: 4,
-              children: List.generate(
-                  releases?.length ?? 0,
-                  (index) => MovieCard(
-                      onTap: () {
-                        Get.to(ReleaseView(
-                            release: releases![index],
-                            herotag: "release_$index"));
-                      },
-                      img: Hero(
-                        tag: "release_$index",
-                        child: Image.network(
-                          releases![index].img,
-                          fit: BoxFit.cover,
+            body: ListView(
+              controller: _scrollController,
+              children: [
+                ResponsiveGridList(
+                    horizontalGridMargin: 10,
+                    verticalGridMargin: 10,
+                    minItemWidth: 150,
+                    maxItemsPerRow: 4,
+                    listViewBuilderOptions:
+                        ListViewBuilderOptions(shrinkWrap: true),
+                    children: List<Widget>.generate(
+                      releases.length,
+                      (index) => MovieCard(
+                        onTap: () {
+                          Get.to(ReleaseView(
+                              release: releases[index],
+                              herotag: "release_$index"));
+                        },
+                        img: Hero(
+                          tag: "release_$index",
+                          child: Image.network(
+                            releases[index].img,
+                            fit: BoxFit.cover,
+                          ),
                         ),
+                        title: releases[index].releaseName,
+                        rating: releases[index].rating.toString(),
                       ),
-                      title: releases![index].releaseName,
-                      rating: releases![index].rating.toString())),
+                    )),
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Text(r"Дальше пусто ¯\_(ツ)_/¯"),
+                  ),
+                )
+              ],
             ),
           );
         },
@@ -106,6 +148,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-        //    
-        // 

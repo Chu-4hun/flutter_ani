@@ -24,7 +24,7 @@ class AuthCubit extends Cubit<AuthState> {
     var auth = 'Basic ${base64Encode(utf8.encode('$login:$password'))}';
 
     try {
-      final response = await dio.get(URL.login.value,
+      final response = await dio.post(URL.login.value,
           options: Options(headers: <String, String>{
             'authorization': auth,
           }));
