@@ -7,6 +7,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:system_theme/system_theme.dart';
 
 import 'cubit/auth_cubit.dart';
+import 'cubit/history_cubit.dart';
 import 'cubit/release_cubit.dart';
 import 'screens/loading_screen.dart';
 
@@ -29,14 +30,13 @@ void main() async {
       BlocProvider(
         create: (context) => ReleaseCubit(),
       ),
+      BlocProvider(
+        create: (context) => HistoryCubit(),
+      ),
     ],
     child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        builder: (context, child) {
-          SystemTheme.fallbackColor = Colors.deepPurple;
-          return Directionality(
-              textDirection: TextDirection.ltr, child: child!);
-        },
+        
         themeMode: ThemeMode.system,
         theme: ThemeData(
           useMaterial3: true,

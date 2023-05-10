@@ -1,13 +1,17 @@
+import 'package:date_format/date_format.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/models/user_info.dart';
 import 'package:flutter_ani/pages/settings_page.dart';
-import 'package:flutter_ani/screens/login_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:line_icons/line_icons.dart';
 
+import '../cubit/history_cubit.dart';
 import '../http.dart';
+import '../models/history.dart';
 import '../utils/token.dart';
 import '../utils/url.dart';
 
@@ -22,13 +26,14 @@ class _ProfilePageState extends State<ProfilePage> {
   final String? accesToken = Token(TokenType.access).read();
 
   UserInfo? userInfo;
+  List<History> history = List.empty();
 
   @override
   void initState() {
     super.initState();
     getUserProfile(accesToken!).then((value) {
       userInfo = value;
-      setState(() {});
+      context.read<HistoryCubit>().get_history(userInfo!.id);
     });
   }
 
@@ -39,60 +44,98 @@ class _ProfilePageState extends State<ProfilePage> {
         foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         onPressed: () {
-          Get.to(SettingsPage());
+          Get.to(const SettingsPage());
         },
-        child: Icon(LineIcons.cog),
+        child: const Icon(LineIcons.cog),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(
-              height: Get.height / 10,
-            ),
-            userInfo?.avatar != null
-                ? CircleAvatar(
-                    radius: Get.height / 5 / 2,
-                    backgroundImage: NetworkImage(userInfo?.avatar ?? ""),
-                  )
-                : CircleAvatar(
-                    radius: Get.height / 5 / 2,
-                    backgroundImage: AssetImage("res/loading.gif"),
-                  ),
-            SizedBox(
-              height: Get.height / 50,
-            ),
-            Text(
-             "Status: ${userInfo?.status ?? "Pedro288"}",
-              style: const TextStyle(
-                  fontSize: 20, decorationStyle: TextDecorationStyle.wavy),
-            ),
-            SizedBox(
-              height: Get.height / 45,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: BlocConsumer<HistoryCubit, HistoryState>(
+        listener: (context, state) {
+          if (state is HistoryError) {
+            Get.snackbar('Ошибка', state.error);
+          }
+          if (state is HistorySucces) {
+            history = state.result.cast<History>();
+          }
+        },
+        builder: (context, state) {
+          return Center(
+            child: Column(
               children: [
-                Card(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                        child:
-                            Text("Friends: 1000")), //TODO add network friends
-                  ),
+                SizedBox(
+                  height: Get.height / 10,
                 ),
-                Card(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                        child: Text("Comments: 99")), //TODO add network friends
-                  ),
-                )
+                userInfo?.avatar != null
+                    ? CircleAvatar(
+                        radius: Get.height / 5 / 2,
+                        backgroundImage: NetworkImage(userInfo?.avatar ?? ""),
+                      )
+                    : CircleAvatar(
+                        radius: Get.height / 5 / 2,
+                        backgroundImage: AssetImage("res/loading.gif"),
+                      ),
+                SizedBox(
+                  height: Get.height / 50,
+                ),
+                Text(
+                  userInfo?.login ?? "Pedro288",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 50,
+                      decorationStyle: TextDecorationStyle.wavy),
+                ),
+                Text(
+                  userInfo?.status ?? "Pedro288",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w200,
+                      fontSize: 15,
+                      decorationStyle: TextDecorationStyle.wavy),
+                ),
+                SizedBox(
+                  height: Get.height / 45,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Card(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                            child: Text(
+                                "Friends: 1000")), //TODO add network friends
+                      ),
+                    ),
+                    Card(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                            child: Text(
+                                "Comments: 99")), //TODO add network friends
+                      ),
+                    )
+                  ],
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: history.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 3,
+                        color: Theme.of(context).colorScheme.background,
+                        child: Center(
+                            child: Text(formatDate(history[index].dateWatched,
+                                [d, ' ', MM, ' ', yyyy],
+                                locale: RussianDateLocale()))),
+                      );
+                    })
               ],
-            )
-          ],
-        ),
+            ),
+          );
+        },
       ),
     );
   }

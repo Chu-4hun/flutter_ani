@@ -1,17 +1,23 @@
+// To parse this JSON data, do
+//
+//     final userInfo = userInfoFromJson(jsonString);
+
 import 'dart:convert';
 
 class UserInfo {
+    int id;
+    String status;
+    String avatar;
+    String login;
+    DateTime registerDate;
+
     UserInfo({
         required this.id,
         required this.status,
         required this.avatar,
+        required this.login,
         required this.registerDate,
     });
-
-    int id;
-    String status;
-    String avatar;
-    DateTime registerDate;
 
     factory UserInfo.fromRawJson(String str) => UserInfo.fromJson(json.decode(str));
 
@@ -21,6 +27,7 @@ class UserInfo {
         id: json["id"],
         status: json["status"],
         avatar: json["avatar"],
+        login: json["login"],
         registerDate: DateTime.parse(json["register_date"]),
     );
 
@@ -28,6 +35,7 @@ class UserInfo {
         "id": id,
         "status": status,
         "avatar": avatar,
+        "login": login,
         "register_date": registerDate.toIso8601String(),
     };
 }

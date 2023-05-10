@@ -13,7 +13,10 @@ enum URL {
 
   getAllDubOptionsForRelease("watch/release/"),
 
+  getHistoryById('history/'),
+  
   addFriend('interact/friend/add/');
+
 
   final String value;
 
