@@ -56,10 +56,10 @@ class _UserScreenState extends State<UserScreen> {
           label: 'Bookmarks',
           builder: () => BookmarksPage()
         ),
-        NavigationElement(
-            icon: const Icon(LineIcons.search),
-            label: 'Search',
-            builder: () => SearchPage()),
+        // NavigationElement(
+        //     icon: const Icon(LineIcons.search),
+        //     label: 'Search',
+        //     builder: () => SearchPage()),
         NavigationElement(
             icon: const Icon(LineIcons.user),
             label: 'Profile',

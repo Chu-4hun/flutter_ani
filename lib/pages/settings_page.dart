@@ -85,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () {
               dio.interceptors.clear();
               Token(TokenType.access).clearAll();
-              Get.off(()=>LoginScreen());
+              Get.off(()=>const LoginScreen());
             },
           )
         ],

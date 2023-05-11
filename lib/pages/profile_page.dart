@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/models/user_info.dart';
 import 'package:flutter_ani/pages/settings_page.dart';
+import 'package:flutter_ani/utils/UI/custom_accept_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
@@ -12,6 +13,7 @@ import 'package:line_icons/line_icons.dart';
 import '../cubit/history_cubit.dart';
 import '../http.dart';
 import '../models/history.dart';
+import '../utils/UI/movie_tile.dart';
 import '../utils/token.dart';
 import '../utils/url.dart';
 
@@ -59,80 +61,104 @@ class _ProfilePageState extends State<ProfilePage> {
         },
         builder: (context, state) {
           return Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: Get.height / 10,
-                ),
-                userInfo?.avatar != null
-                    ? CircleAvatar(
-                        radius: Get.height / 5 / 2,
-                        backgroundImage: NetworkImage(userInfo?.avatar ?? ""),
-                      )
-                    : CircleAvatar(
-                        radius: Get.height / 5 / 2,
-                        backgroundImage: AssetImage("res/loading.gif"),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: Get.height / 30,
+                  ),
+                  userInfo?.avatar != null
+                      ? CircleAvatar(
+                          radius: Get.height / 5 / 2,
+                          backgroundImage: NetworkImage(userInfo?.avatar ?? ""),
+                        )
+                      : CircleAvatar(
+                          radius: Get.height / 5 / 2,
+                          backgroundImage: const AssetImage("res/loading.gif"),
+                        ),
+                  SizedBox(
+                    height: Get.height / 50,
+                  ),
+                  Text(
+                    userInfo?.login ?? "Pedro288",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 50,
+                        decorationStyle: TextDecorationStyle.wavy),
+                  ),
+                  Text(
+                    userInfo?.status ?? "Pedro288",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w200,
+                        fontSize: 15,
+                        decorationStyle: TextDecorationStyle.wavy),
+                  ),
+                  SizedBox(
+                    height: Get.height / 80,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Card(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                              child: Text(
+                                  "Friends: 1000")), //TODO add network friends
+                        ),
                       ),
-                SizedBox(
-                  height: Get.height / 50,
-                ),
-                Text(
-                  userInfo?.login ?? "Pedro288",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 50,
-                      decorationStyle: TextDecorationStyle.wavy),
-                ),
-                Text(
-                  userInfo?.status ?? "Pedro288",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w200,
-                      fontSize: 15,
-                      decorationStyle: TextDecorationStyle.wavy),
-                ),
-                SizedBox(
-                  height: Get.height / 45,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                            child: Text(
-                                "Friends: 1000")), //TODO add network friends
+                      Card(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                              child: Text(
+                                  "Comments: 99")), //TODO add network friends
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: Get.height / 80,
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "История:",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                            decorationStyle: TextDecorationStyle.wavy),
                       ),
                     ),
-                    Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                            child: Text(
-                                "Comments: 99")), //TODO add network friends
-                      ),
-                    )
-                  ],
-                ),
-                ListView.builder(
+                  ),
+                  ListView.builder(
+                    clipBehavior: Clip.antiAlias,
                     shrinkWrap: true,
                     itemCount: history.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MovieTileWithPlay(
+                          img: history[index].img,
+                          title: history[index].releaseName,
+                          description: history[index].description,
+                          episode: history[index].episode,
+                          duration: history[index].duration,
+                          height: Get.height / 4,
+                          onClick: () {},
                         ),
-                        elevation: 3,
-                        color: Theme.of(context).colorScheme.background,
-                        child: Center(
-                            child: Text(formatDate(history[index].dateWatched,
-                                [d, ' ', MM, ' ', yyyy],
-                                locale: RussianDateLocale()))),
                       );
-                    })
-              ],
+                    },
+                  ),
+                  SizedBox(
+                    height: Get.height / 10,
+                  )
+                ],
+              ),
             ),
           );
         },

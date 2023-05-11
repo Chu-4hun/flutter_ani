@@ -13,7 +13,7 @@ import 'screens/loading_screen.dart';
 
 void main() async {
   await GetStorage.init();
-   initMeeduPlayer();
+  initMeeduPlayer();
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemTheme.fallbackColor = const Color.fromARGB(255, 50, 134, 82);
@@ -36,17 +36,16 @@ void main() async {
     ],
     child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        
         themeMode: ThemeMode.system,
         theme: ThemeData(
           useMaterial3: true,
           colorSchemeSeed: SystemTheme.accentColor.accent,
-          // colorSchemeSeed: Colors.blue,
+          // colorSchemeSeed: Colors.red,
         ),
         darkTheme: ThemeData(
           useMaterial3: true,
           brightness: Brightness.dark,
-          // colorSchemeSeed: Colors.green,
+          // colorSchemeSeed: Colors.red,
           colorSchemeSeed: SystemTheme.accentColor.accent,
         ),
         home: SplashScreen()),
