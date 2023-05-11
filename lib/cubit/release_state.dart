@@ -17,6 +17,12 @@ class ReleaseSucces<T> extends ReleaseState {
   ReleaseSucces(this.result);
 }
 
+class ReleaseEpisodeSucces<T> extends ReleaseState {
+   final T result;
+
+  ReleaseEpisodeSucces(this.result);
+}
+
 class ReleaseLoading extends ReleaseState {}
 
 class ReleaseError extends ReleaseState {

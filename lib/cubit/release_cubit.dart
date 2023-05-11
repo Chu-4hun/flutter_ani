@@ -39,12 +39,12 @@ class ReleaseCubit extends Cubit<ReleaseState> {
   Future<void> getEpisodesByDub(int release_id, int dub_id) async {
     emit(ReleaseLoading());
     try {
-      final response = await dio.get("${URL.getAllDubOptionsForRelease.value}$release_id/$dub_id");
+      final response = await dio
+          .get("${URL.getAllDubOptionsForRelease.value}$release_id/$dub_id");
       logger.d('${response.statusCode}');
       if (response.statusCode == 202) {
-        List<Episode> episodes = (response.data as List)
-            .map((i) => Episode.fromJson(i))
-            .toList();
+        List<Episode> episodes =
+            (response.data as List).map((i) => Episode.fromJson(i)).toList();
         emit(ReleaseSucces<Episode>(episodes));
       }
     } on DioError catch (e) {
@@ -53,6 +53,21 @@ class ReleaseCubit extends Cubit<ReleaseState> {
       } else {
         emit(ReleaseError('Something went wrong'));
       }
+    }
+  }
+
+  Future<void> getEpisodeById(int id) async {
+    try {
+      final response = await dio.get("${URL.geByEpisodeById.value}$id");
+      if (response.statusCode == 200) {
+        var episode = Episode.fromJson(response.data);
+        if (episode == null) {
+          emit(ReleaseError("Cannot get episode"));
+        }
+        emit(ReleaseEpisodeSucces<Episode>(episode));
+      }
+    } on DioError catch (e) {
+      emit(ReleaseError("Something went wrong."));
     }
   }
 }

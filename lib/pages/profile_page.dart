@@ -13,6 +13,8 @@ import 'package:line_icons/line_icons.dart';
 import '../cubit/history_cubit.dart';
 import '../http.dart';
 import '../models/history.dart';
+import '../models/release.dart';
+import '../screens/release_screen.dart';
 import '../utils/UI/movie_tile.dart';
 import '../utils/token.dart';
 import '../utils/url.dart';
@@ -29,13 +31,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   UserInfo? userInfo;
   List<History> history = List.empty();
+  int selectedEpisode = 0;
 
   @override
   void initState() {
     super.initState();
     getUserProfile(accesToken!).then((value) {
       userInfo = value;
-      context.read<HistoryCubit>().get_history(userInfo!.id);
+      context.read<HistoryCubit>().getHistory(userInfo!.id);
     });
   }
 
@@ -57,6 +60,13 @@ class _ProfilePageState extends State<ProfilePage> {
           }
           if (state is HistorySucces) {
             history = state.result.cast<History>();
+          }
+          if (state is HistoryReleaseSucces) {
+            Release rel = state.result.cast<Release>();
+            Get.to(ReleaseView(
+              episodeId: selectedEpisode,
+              release: rel,
+            ));
           }
         },
         builder: (context, state) {
@@ -149,7 +159,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           episode: history[index].episode,
                           duration: history[index].duration,
                           height: Get.height / 4,
-                          onClick: () {},
+                          onClick: () {
+                            selectedEpisode = history[index].episode;
+                            context
+                                .read<HistoryCubit>()
+                                .getReleaseByEpisodeId(history[index].episode);
+                          },
                         ),
                       );
                     },

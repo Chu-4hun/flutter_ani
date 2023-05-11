@@ -18,3 +18,9 @@ class HistorySucces<T> extends HistoryState {
 
   HistorySucces(this.result);
 }
+
+class HistoryReleaseSucces<T> extends HistoryState {
+  final T result;
+
+  HistoryReleaseSucces(this.result);
+}

@@ -10,6 +10,8 @@ enum URL {
   watch("watch/"),
   getAllReleases("watch/releases/popular/show"),
   searchReleases("watch/releases/search?request="),
+  geByEpisodeById('watch/episode/'),
+  getReleaseByEpisodeId('watch/release?episode_id='),
 
   getAllDubOptionsForRelease("watch/release/"),
 

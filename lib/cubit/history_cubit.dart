@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_ani/models/release.dart';
 import 'package:meta/meta.dart';
 
 import '../http.dart';
@@ -11,7 +12,7 @@ part 'history_state.dart';
 class HistoryCubit extends Cubit<HistoryState> {
   HistoryCubit() : super(HistoryInitial());
 
-  Future<void> get_history(int id) async {
+  Future<void> getHistory(int id) async {
     emit(HistoryLoading());
     try {
       final response = await dio.get("${URL.getHistoryById.value}$id");
@@ -28,4 +29,19 @@ class HistoryCubit extends Cubit<HistoryState> {
       emit(HistoryError("No history records available."));
     }
   }
+  Future<void> getReleaseByEpisodeId(int id) async {
+    try {
+      final response = await dio.get("${URL.getReleaseByEpisodeId.value}$id");
+      if (response.statusCode == 200) {
+        var release = Release.fromJson(response.data);
+        if (release == null) {
+          emit(HistoryError("Cannot restore release"));
+        }
+        emit(HistoryReleaseSucces<Release>(release));
+      }
+    } on DioError catch (e) {
+      emit(HistoryError("No history records available."+ e.toString()));
+    }
+  }
+  
 }

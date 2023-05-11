@@ -18,17 +18,18 @@ import 'dart:io' show Platform;
 import '../cubit/release_cubit.dart';
 
 class ReleaseView extends StatefulWidget {
-  ReleaseView({super.key, required this.release, this.herotag});
+  ReleaseView({super.key, required this.release, this.herotag, this.episodeId});
 
   final Release release;
   final String? herotag;
+  int? episodeId;
 
   @override
   State<ReleaseView> createState() => _ReleaseViewState();
 }
 
 class _ReleaseViewState extends State<ReleaseView> {
-  final _meeduPlayerController = MeeduPlayerController(
+  MeeduPlayerController _meeduPlayerController = MeeduPlayerController(
     controlsStyle: ControlsStyle.primary,
     screenManager:
         const ScreenManager(forceLandScapeInFullscreen: false, orientations: [
@@ -51,6 +52,9 @@ class _ReleaseViewState extends State<ReleaseView> {
   void initState() {
     super.initState();
     context.read<ReleaseCubit>().getDubs(widget.release.id);
+    if (widget.episodeId != null) {
+      context.read<ReleaseCubit>().getEpisodeById(widget.episodeId ?? 0);
+    }
     if (!Platform.isLinux) {
       Wakelock.enable();
     }
@@ -115,6 +119,9 @@ class _ReleaseViewState extends State<ReleaseView> {
           }
           if (state is ReleaseSucces) {
             episodes = state.result.cast<Episode>();
+          }
+          if (state is ReleaseEpisodeSucces) {
+            selectedEpisode = state.result.cast<Episode>();
           }
         },
         builder: (context, state) {
@@ -193,6 +200,7 @@ class _ReleaseViewState extends State<ReleaseView> {
                           selectedStreamOption = streamOptions[0];
                           streamURL = streamOptions[0].src;
                           _setDataSource();
+                          //TODO
                           setState(() {});
                         },
                         label: Text(episodes[index].epName),
