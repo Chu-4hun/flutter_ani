@@ -17,11 +17,12 @@ import 'dart:io' show Platform;
 import '../cubit/release_cubit.dart';
 
 class ReleaseView extends StatefulWidget {
-  ReleaseView({super.key, required this.release, this.herotag, this.episodeId});
+  ReleaseView({super.key, required this.release, this.herotag, this.episodeId,this.dubId});
 
   final Release release;
   final String? herotag;
-  int? episodeId;
+  int? episodeId = 0;
+  int? dubId = 0;
 
   @override
   State<ReleaseView> createState() => _ReleaseViewState();
@@ -41,8 +42,6 @@ class _ReleaseViewState extends State<ReleaseView> {
   List<Episode> episodes = List.empty(growable: true);
   List<StreamOption> streamOptions = List.empty(growable: true);
 
-  Episode? selectedEpisode;
-  Dub? selectedDub;
   StreamOption? selectedStreamOption;
   String streamURL = "";
 
@@ -120,9 +119,6 @@ class _ReleaseViewState extends State<ReleaseView> {
           if (state is ReleaseSucces) {
             episodes = state.result.cast<Episode>();
           }
-          if (state is ReleaseEpisodeSucces) {
-            selectedEpisode = state.result.cast<Episode>();
-          }
         },
         builder: (context, state) {
           return ListView(
@@ -167,12 +163,12 @@ class _ReleaseViewState extends State<ReleaseView> {
                   dubs.length,
                   ((index) => ChoiceChip(
                         onSelected: (bool isSelected) {
-                          selectedDub = dubs[index];
+                          widget.dubId = dubs[index].id;
                           context.read<ReleaseCubit>().getEpisodesByDub(
                               widget.release.id, dubs[index].id);
                         },
                         label: Text(dubs[index].name),
-                        selected: dubs[index] == selectedDub,
+                        selected: dubs[index].id == widget.dubId,
                       )),
                 ),
               ),
@@ -194,7 +190,7 @@ class _ReleaseViewState extends State<ReleaseView> {
                         selectedShadowColor:
                             Theme.of(context).colorScheme.primary,
                         onSelected: (bool isSelected) async {
-                          selectedEpisode = episodes[index];
+                          widget.episodeId = episodes[index].id;
                           var options = await getStreamOptions(episodes[index]);
                           streamOptions = options ?? List.empty(growable: true);
                           selectedStreamOption = streamOptions[0];
@@ -204,7 +200,7 @@ class _ReleaseViewState extends State<ReleaseView> {
                           setState(() {});
                         },
                         label: Text(episodes[index].epName),
-                        selected: episodes[index] == selectedEpisode,
+                        selected: episodes[index].id == widget.episodeId,
                       )),
                 ),
               ),

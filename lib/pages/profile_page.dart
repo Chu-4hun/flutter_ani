@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   UserInfo? userInfo;
   List<History> history = List.empty();
-  int selectedEpisode = 0;
+  History? selectedHistory;
 
   @override
   void initState() {
@@ -59,9 +59,10 @@ class _ProfilePageState extends State<ProfilePage> {
             history = state.result.cast<History>();
           }
           if (state is HistoryReleaseSucces) {
-            Release rel = state.result.cast<Release>();
+            Release rel = state.result;
             Get.to(ReleaseView(
-              episodeId: selectedEpisode,
+              episodeId: selectedHistory?.episodeId,
+              dubId: selectedHistory?.dubId,
               release: rel,
             ));
           }
@@ -154,15 +155,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             img: history[index].img,
                             title: history[index].releaseName,
                             description: history[index].description,
-                            episode: history[index].episode,
+                            episode: history[index].episodeId,
                             duration: history[index].duration,
                             height: Get.height / 4,
                             onClick: () {
-                              selectedEpisode = history[index].episode;
+                              selectedHistory = history[index];
                               context
                                   .read<HistoryCubit>()
                                   .getReleaseByEpisodeId(
-                                      history[index].episode);
+                                      history[index].episodeId);
                             },
                           ),
                         );

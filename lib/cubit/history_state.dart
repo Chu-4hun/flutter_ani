@@ -19,8 +19,8 @@ class HistorySucces<T> extends HistoryState {
   HistorySucces(this.result);
 }
 
-class HistoryReleaseSucces<T> extends HistoryState {
-  final T result;
+class HistoryReleaseSucces<Release> extends HistoryState {
+  final Release result;
 
   HistoryReleaseSucces(this.result);
 }
