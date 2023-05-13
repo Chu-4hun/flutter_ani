@@ -53,6 +53,8 @@ dependencies:
   flutter_meedu_videoplayer: ^4.2.7
   wakelock: ^0.6.2
   date_format: ^2.0.7
+  flutter_expandable_text: ^1.0.0
+  either_dart: ^0.4.0
 
   
   

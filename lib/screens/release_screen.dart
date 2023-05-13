@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:either_dart/either.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ani/controllers/video_options_for_episode_controller.dart';
+import 'package:flutter_ani/cubit/history_cubit.dart';
 import 'package:flutter_ani/models/dub.dart';
 import 'package:flutter_ani/models/episodes.dart';
+import 'package:flutter_ani/models/history.dart';
 import 'package:flutter_ani/models/release.dart';
 import 'package:flutter_ani/models/stream_option.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,47 +20,56 @@ import 'dart:io' show Platform;
 import '../cubit/release_cubit.dart';
 
 class ReleaseView extends StatefulWidget {
-  ReleaseView({super.key, required this.release, this.herotag, this.episodeId});
+  ReleaseView({super.key, this.herotag, required this.input});
 
-  final Release release;
   final String? herotag;
-  int? episodeId;
+  final Either<Release, History> input;
 
   @override
   State<ReleaseView> createState() => _ReleaseViewState();
 }
 
 class _ReleaseViewState extends State<ReleaseView> {
-  final MeeduPlayerController _meeduPlayerController = MeeduPlayerController(
+  final _meeduPlayerController = MeeduPlayerController(
     enabledButtons: EnabledButtons(rewindAndfastForward: false),
-    // controlsStyle: ControlsStyle(),
+    controlsStyle: ControlsStyle.primary,
     screenManager:
         const ScreenManager(forceLandScapeInFullscreen: false, orientations: [
       DeviceOrientation.portraitUp,
     ]),
   );
 
+  Release? release;
   List<Dub> dubs = List.empty(growable: true);
   List<Episode> episodes = List.empty(growable: true);
   List<StreamOption> streamOptions = List.empty(growable: true);
 
-  Episode? selectedEpisode;
-  Dub? selectedDub;
+  int? selectedEpisode;
+  int? selectedDub;
   StreamOption? selectedStreamOption;
   String streamURL = "";
 
   bool isFullscreen = false;
 
+  Future<void> applyHitory(Either<Release, History> input) async {
+    input.fold(
+      (left) => release = left,
+      (right) => {
+        context.read<HistoryCubit>().getReleaseByEpisodeId(right.episodeId),
+        selectedDub = right.dubId,
+        selectedEpisode = right.episodeId,
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
-    context.read<ReleaseCubit>().getDubs(widget.release.id);
-    if (widget.episodeId != null) {
-      context.read<ReleaseCubit>().getEpisodeById(widget.episodeId ?? 0);
-    }
+   
     if (!Platform.isLinux) {
       Wakelock.enable();
     }
+    applyHitory(widget.input).then((value) => { context.read<ReleaseCubit>().getDubs(release!.id)});
     _meeduPlayerController.onFullscreenChanged.listen(
       (bool isFullScr) {
         if (isFullScr) {
@@ -106,7 +118,7 @@ class _ReleaseViewState extends State<ReleaseView> {
       appBar: isFullscreen
           ? null
           : AppBar(
-              title: Text(widget.release.releaseName),
+              title: Text(release!.releaseName),
             ),
       body: BlocConsumer<ReleaseCubit, ReleaseState>(
         listener: (context, state) async {
@@ -120,9 +132,6 @@ class _ReleaseViewState extends State<ReleaseView> {
           if (state is ReleaseSucces) {
             episodes = state.result.cast<Episode>();
           }
-          if (state is ReleaseEpisodeSucces) {
-            selectedEpisode = state.result.cast<Episode>();
-          }
         },
         builder: (context, state) {
           return ListView(
@@ -134,7 +143,7 @@ class _ReleaseViewState extends State<ReleaseView> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    widget.release.img,
+                    release!.img,
                     fit: BoxFit.cover,
                     height: Get.height / 3,
                   ),
@@ -143,15 +152,15 @@ class _ReleaseViewState extends State<ReleaseView> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: ExpandablePanel(
-                  header: const Text("Описание"),
+                  header: Text("Описание"),
                   collapsed: Text(
-                    widget.release.description,
+                    release!.description,
                     softWrap: true,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   expanded: SelectableText(
-                    widget.release.description,
+                    release!.description,
                   ),
                   theme: ExpandableThemeData(
                       tapBodyToExpand: true,
@@ -167,12 +176,13 @@ class _ReleaseViewState extends State<ReleaseView> {
                   dubs.length,
                   ((index) => ChoiceChip(
                         onSelected: (bool isSelected) {
-                          selectedDub = dubs[index];
-                          context.read<ReleaseCubit>().getEpisodesByDub(
-                              widget.release.id, dubs[index].id);
+                          selectedDub = dubs[index].id;
+                          context
+                              .read<ReleaseCubit>()
+                              .getEpisodesByDub(release!.id, dubs[index].id);
                         },
                         label: Text(dubs[index].name),
-                        selected: dubs[index] == selectedDub,
+                        selected: dubs[index].id == selectedDub,
                       )),
                 ),
               ),
@@ -194,17 +204,16 @@ class _ReleaseViewState extends State<ReleaseView> {
                         selectedShadowColor:
                             Theme.of(context).colorScheme.primary,
                         onSelected: (bool isSelected) async {
-                          selectedEpisode = episodes[index];
+                          selectedEpisode = episodes[index].id;
                           var options = await getStreamOptions(episodes[index]);
                           streamOptions = options ?? List.empty(growable: true);
                           selectedStreamOption = streamOptions[0];
                           streamURL = streamOptions[0].src;
                           _setDataSource();
-                          //TODO
                           setState(() {});
                         },
                         label: Text(episodes[index].epName),
-                        selected: episodes[index] == selectedEpisode,
+                        selected: episodes[index].id == selectedEpisode,
                       )),
                 ),
               ),

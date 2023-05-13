@@ -1,4 +1,4 @@
-
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/cubit/search_cubit.dart';
 import 'package:flutter_ani/screens/release_screen.dart';
@@ -90,7 +90,7 @@ class SearchPage extends StatelessWidget {
                               //     builder: (context) =>
                               //         ReleaseView(release: releases![index],herotag: "release_${releases![index]}")));
                               Get.to(ReleaseView(
-                                  release: releases![index],
+                                  input: Left(releases![index]),
                                   herotag: "release_$index"));
                             },
                             img: Hero(

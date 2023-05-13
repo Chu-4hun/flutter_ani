@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/models/user_info.dart';
 import 'package:flutter_ani/pages/settings_page.dart';
+import 'package:flutter_ani/screens/release_screen2.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -57,13 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
           }
           if (state is HistorySucces) {
             history = state.result.cast<History>();
-          }
-          if (state is HistoryReleaseSucces) {
-            Release rel = state.result.cast<Release>();
-            Get.to(ReleaseView(
-              episodeId: selectedEpisode,
-              release: rel,
-            ));
           }
         },
         builder: (context, state) {
@@ -154,15 +149,17 @@ class _ProfilePageState extends State<ProfilePage> {
                             img: history[index].img,
                             title: history[index].releaseName,
                             description: history[index].description,
-                            episode: history[index].episode,
+                            episode: history[index].episodeId,
                             duration: history[index].duration,
                             height: Get.height / 4,
                             onClick: () {
-                              selectedEpisode = history[index].episode;
-                              context
-                                  .read<HistoryCubit>()
-                                  .getReleaseByEpisodeId(
-                                      history[index].episode);
+                              Get.to(ReleaseView(
+                                input: Right(history[index]),
+                              ));
+                              // context
+                              //     .read<HistoryCubit>()
+                              //     .getReleaseByEpisodeId(
+                              //         history[index].episode);
                             },
                           ),
                         );

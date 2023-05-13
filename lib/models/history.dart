@@ -1,41 +1,45 @@
 import 'dart:convert';
 
+History historyFromJson(String str) => History.fromJson(json.decode(str));
+
+String historyToJson(History data) => json.encode(data.toJson());
+
 class History {
     String releaseName;
     String description;
     String img;
-    int episode;
+    int episodeId;
     double duration;
     DateTime dateWatched;
+    int dubId;
 
     History({
         required this.releaseName,
         required this.description,
         required this.img,
-        required this.episode,
+        required this.episodeId,
         required this.duration,
         required this.dateWatched,
+        required this.dubId,
     });
-
-    factory History.fromRawJson(String str) => History.fromJson(json.decode(str));
-
-    String toRawJson() => json.encode(toJson());
 
     factory History.fromJson(Map<String, dynamic> json) => History(
         releaseName: json["release_name"],
         description: json["description"],
         img: json["img"],
-        episode: json["episode"],
+        episodeId: json["episode_id"],
         duration: json["duration"],
         dateWatched: DateTime.parse(json["date_watched"]),
+        dubId: json["dub_id"],
     );
 
     Map<String, dynamic> toJson() => {
         "release_name": releaseName,
         "description": description,
         "img": img,
-        "episode": episode,
+        "episode_id": episodeId,
         "duration": duration,
         "date_watched": dateWatched.toIso8601String(),
+        "dub_id": dubId,
     };
 }

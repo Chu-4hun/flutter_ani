@@ -1,3 +1,4 @@
+import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -122,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                       (index) => MovieCard(
                         onTap: () {
                           Get.to(ReleaseView(
-                              release: releases[index],
+                              input: Left(releases[index]),
                               herotag: "release_$index"));
                         },
                         img: Hero(
