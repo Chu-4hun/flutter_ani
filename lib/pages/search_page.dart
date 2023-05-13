@@ -14,6 +14,8 @@ class SearchPage extends StatelessWidget {
 
   List<Release>? releases;
 
+  SearchPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

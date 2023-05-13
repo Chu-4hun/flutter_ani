@@ -31,7 +31,7 @@ class MovieTileWithPlay extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).colorScheme.outline,
-            offset: Offset(0.0, 1.0), //(x,y)
+            offset: const Offset(0.0, 1.0), //(x,y)
             blurRadius: 4.0,
           ),
         ],
@@ -84,7 +84,7 @@ class MovieTileWithPlay extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
                                 decorationStyle: TextDecorationStyle.wavy),
-                            "Серия: ${episode} Время: ${duration}"),
+                            "Серия: $episode Время: $duration"),
                       ),
                     ),
                   ),

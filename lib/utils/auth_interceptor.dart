@@ -43,7 +43,7 @@ class AuthInterceptor extends Interceptor {
     final accessTokenHasExpired = JwtDecoder.isExpired(accessToken);
     final refreshTokenHasExpired = JwtDecoder.isExpired(refreshToken);
 
-    var _refreshed = true;
+    var refreshed = true;
 
     if (refreshTokenHasExpired) {
       _performLogout(_dio);
@@ -56,10 +56,10 @@ class AuthInterceptor extends Interceptor {
       return handler.reject(error);
     } else if (accessTokenHasExpired) {
       // regenerate access token
-      _refreshed = await _regenerateAccessToken();
+      refreshed = await _regenerateAccessToken();
     }
 
-    if (_refreshed) {
+    if (refreshed) {
       // add access token to the request header
       accessToken = Token(TokenType.access).read(); ////
       options.headers["Authorization"] = "Bearer $accessToken";
@@ -94,7 +94,7 @@ class AuthInterceptor extends Interceptor {
   void _performLogout(Dio dio) {
     dio.interceptors.clear();
     Token(TokenType.access).clearAll();
-    Get.off(() => LoginScreen());
+    Get.off(() => const LoginScreen());
   }
 
   /// return true if it is successfully regenerate the access token
@@ -124,7 +124,7 @@ class AuthInterceptor extends Interceptor {
         print(response.statusCode);
         return false;
       }
-    } on DioError catch (e) {
+    } on DioError {
       return false;
     }
   }

@@ -18,17 +18,17 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
-  static List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
-    Text(
+  static final List<Widget> _widgetOptions = <Widget>[
+    const HomePage(),
+    const Text(
       'Likes',
       style: optionStyle,
     ),
     SearchPage(),
-    ProfilePage()
+    const ProfilePage()
   ];
 
   @override
@@ -50,11 +50,11 @@ class _UserScreenState extends State<UserScreen> {
         NavigationElement(
             icon: const Icon(LineIcons.home),
             label: 'Home',
-            builder: () => HomePage()),
+            builder: () => const HomePage()),
         NavigationElement(
           icon: const Icon(LineIcons.book),
           label: 'Bookmarks',
-          builder: () => BookmarksPage()
+          builder: () => const BookmarksPage()
         ),
         // NavigationElement(
         //     icon: const Icon(LineIcons.search),
@@ -63,7 +63,7 @@ class _UserScreenState extends State<UserScreen> {
         NavigationElement(
             icon: const Icon(LineIcons.user),
             label: 'Profile',
-            builder: () => ProfilePage()),
+            builder: () => const ProfilePage()),
       ], // Required. The list of destinations for the navigation in the app. Should have atleast 1 element.
     );
   }

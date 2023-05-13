@@ -1,12 +1,9 @@
-import 'package:date_format/date_format.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/models/user_info.dart';
 import 'package:flutter_ani/pages/settings_page.dart';
-import 'package:flutter_ani/utils/UI/custom_accept_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -20,7 +17,7 @@ import '../utils/token.dart';
 import '../utils/url.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({super.key});
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -111,8 +108,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       Card(
                         color: Theme.of(context).colorScheme.secondaryContainer,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Center(
                               child: Text(
                                   "Friends: 1000")), //TODO add network friends
@@ -120,8 +117,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       Card(
                         color: Theme.of(context).colorScheme.secondaryContainer,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Center(
                               child: Text(
                                   "Comments: 99")), //TODO add network friends
@@ -145,30 +142,32 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  ListView.builder(
-                    clipBehavior: Clip.antiAlias,
-                    shrinkWrap: true,
-                    itemCount: history.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MovieTileWithPlay(
-                          img: history[index].img,
-                          title: history[index].releaseName,
-                          description: history[index].description,
-                          episode: history[index].episode,
-                          duration: history[index].duration,
-                          height: Get.height / 4,
-                          onClick: () {
-                            selectedEpisode = history[index].episode;
-                            context
-                                .read<HistoryCubit>()
-                                .getReleaseByEpisodeId(history[index].episode);
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                  if (history.isNotEmpty)
+                    ListView.builder(
+                      clipBehavior: Clip.antiAlias,
+                      shrinkWrap: true,
+                      itemCount: history.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MovieTileWithPlay(
+                            img: history[index].img,
+                            title: history[index].releaseName,
+                            description: history[index].description,
+                            episode: history[index].episode,
+                            duration: history[index].duration,
+                            height: Get.height / 4,
+                            onClick: () {
+                              selectedEpisode = history[index].episode;
+                              context
+                                  .read<HistoryCubit>()
+                                  .getReleaseByEpisodeId(
+                                      history[index].episode);
+                            },
+                          ),
+                        );
+                      },
+                    ),
                   SizedBox(
                     height: Get.height / 10,
                   )
@@ -192,7 +191,7 @@ Future<UserInfo?> getUserProfile(String token) async {
     if (response.statusCode == 200 || response.statusCode == 202) {
       return UserInfo.fromJson(response.data);
     }
-  } on DioError catch (e) {
+  } on DioError {
     return null;
   }
   return null;

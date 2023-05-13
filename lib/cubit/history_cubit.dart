@@ -25,7 +25,7 @@ class HistoryCubit extends Cubit<HistoryState> {
         }
         emit(HistorySucces<History>(history));
       }
-    } on DioError catch (e) {
+    } on DioError {
       emit(HistoryError("No history records available."));
     }
   }
@@ -40,7 +40,7 @@ class HistoryCubit extends Cubit<HistoryState> {
         emit(HistoryReleaseSucces<Release>(release));
       }
     } on DioError catch (e) {
-      emit(HistoryError("No history records available."+ e.toString()));
+      emit(HistoryError("No history records available.$e"));
     }
   }
   

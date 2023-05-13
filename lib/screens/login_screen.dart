@@ -22,7 +22,7 @@ class LoginScreen extends StatelessWidget {
             Get.snackbar('Ошибка', state.error);
           }
           if (state is AuthSucces) {
-            Get.off(() => UserScreen());
+            Get.off(() => const UserScreen());
           }
         },
         builder: (context, state) {
@@ -46,7 +46,7 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Container(
                               alignment: Alignment.center,
-                              child: Column(
+                              child: const Column(
                                 children: [
                                   Text(
                                     "Log in",
@@ -93,7 +93,7 @@ class LoginScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: Container(
                           alignment: Alignment.center,
-                          child: Column(
+                          child: const Column(
                             children: [
                               Text(
                                 "Log in",
@@ -123,7 +123,7 @@ class LoginScreen extends StatelessWidget {
 }
 
 class LoginForm extends StatelessWidget {
-  LoginForm();
+  LoginForm({super.key});
 
   final _key = GlobalKey<FormState>();
 
@@ -183,7 +183,7 @@ class LoginForm extends StatelessWidget {
                       TextStyle(color: Theme.of(context).colorScheme.primary),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      Get.to(RegisterScreen());
+                      Get.to(const RegisterScreen());
                     },
                 ),
               ],

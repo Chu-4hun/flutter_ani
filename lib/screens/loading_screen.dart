@@ -5,11 +5,12 @@ import 'package:flutter_ani/screens/user_screen.dart';
 import 'package:get/get.dart';
 
 import '../http.dart';
-import '../utils/auth_interceptor.dart';
 import '../utils/token.dart';
 import '../utils/url.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -25,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -47,9 +48,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
 Future changeScreen() async {
   if (await isAuthenticated()) {
-    Get.off(UserScreen());
+    Get.off(const UserScreen());
   } else {
-    Get.off(LoginScreen());
+    Get.off(const LoginScreen());
   }
 }
 
@@ -67,7 +68,7 @@ Future<bool> isAuthenticated() async {
       Token(TokenType.access).store(response.data);
       return true;
     }
-  } on DioError catch (e) {
+  } on DioError {
     return false;
   }
 

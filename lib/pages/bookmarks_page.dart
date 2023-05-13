@@ -37,7 +37,7 @@ class BookmarksPage extends StatelessWidget {
                 ),
               ),
             ),
-            bottom: TabBar(
+            bottom: const TabBar(
               isScrollable: true,
               tabs: [
                 Tab(child: Text('Для меня')),
@@ -48,7 +48,7 @@ class BookmarksPage extends StatelessWidget {
             ),
           ),
         ],
-        body: TabBarView(
+        body: const TabBarView(
           children: <Widget>[
             Icon(Icons.flight, size: 350),
             Icon(Icons.flight, size: 350),

@@ -24,7 +24,7 @@ class RegisterScreen extends StatelessWidget {
             Get.snackbar('Ошибка', state.error);
           }
           if (state is RegisterSucces) {
-            Get.off(() => LoginScreen());
+            Get.off(() => const LoginScreen());
           }
         },
         builder: (context, state) {
@@ -50,8 +50,8 @@ class RegisterScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(10.0),
                               child: Container(
                                 alignment: Alignment.center,
-                                child: Column(
-                                  children: const [
+                                child: const Column(
+                                  children: [
                                     Text(
                                       "Register",
                                       style: TextStyle(fontSize: 60),
@@ -101,8 +101,8 @@ class RegisterScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: Container(
                           alignment: Alignment.center,
-                          child: Column(
-                            children: const [
+                          child: const Column(
+                            children: [
                               Text(
                                 "Register",
                                 style: TextStyle(fontSize: 60),
@@ -131,7 +131,7 @@ class RegisterScreen extends StatelessWidget {
 }
 
 class LoginForm extends StatelessWidget {
-  LoginForm();
+  LoginForm({super.key});
 
   final _key = GlobalKey<FormState>();
 
@@ -201,7 +201,7 @@ class LoginForm extends StatelessWidget {
                       TextStyle(color: Theme.of(context).colorScheme.primary),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      Get.to(LoginScreen());
+                      Get.to(const LoginScreen());
                     },
                 ),
               ],

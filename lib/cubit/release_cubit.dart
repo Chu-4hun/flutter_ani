@@ -36,11 +36,11 @@ class ReleaseCubit extends Cubit<ReleaseState> {
     }
   }
 
-  Future<void> getEpisodesByDub(int release_id, int dub_id) async {
+  Future<void> getEpisodesByDub(int releaseId, int dubId) async {
     emit(ReleaseLoading());
     try {
       final response = await dio
-          .get("${URL.getAllDubOptionsForRelease.value}$release_id/$dub_id");
+          .get("${URL.getAllDubOptionsForRelease.value}$releaseId/$dubId");
       logger.d('${response.statusCode}');
       if (response.statusCode == 202) {
         List<Episode> episodes =
@@ -66,7 +66,7 @@ class ReleaseCubit extends Cubit<ReleaseState> {
         }
         emit(ReleaseEpisodeSucces<Episode>(episode));
       }
-    } on DioError catch (e) {
+    } on DioError {
       emit(ReleaseError("Something went wrong."));
     }
   }

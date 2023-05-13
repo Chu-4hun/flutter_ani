@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +28,9 @@ class ReleaseView extends StatefulWidget {
 }
 
 class _ReleaseViewState extends State<ReleaseView> {
-  MeeduPlayerController _meeduPlayerController = MeeduPlayerController(
-    controlsStyle: ControlsStyle.primary,
+  final MeeduPlayerController _meeduPlayerController = MeeduPlayerController(
+    enabledButtons: EnabledButtons(rewindAndfastForward: false),
+    // controlsStyle: ControlsStyle(),
     screenManager:
         const ScreenManager(forceLandScapeInFullscreen: false, orientations: [
       DeviceOrientation.portraitUp,
@@ -143,7 +143,7 @@ class _ReleaseViewState extends State<ReleaseView> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: ExpandablePanel(
-                  header: Text("Описание"),
+                  header: const Text("Описание"),
                   collapsed: Text(
                     widget.release.description,
                     softWrap: true,

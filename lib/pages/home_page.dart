@@ -9,6 +9,8 @@ import '../screens/release_screen.dart';
 import '../utils/UI/movie_card.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomePageState();
 }

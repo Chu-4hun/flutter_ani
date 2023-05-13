@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ani/cubit/search_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,11 +13,19 @@ import 'cubit/history_cubit.dart';
 import 'cubit/release_cubit.dart';
 import 'screens/loading_screen.dart';
 
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+
 void main() async {
   await GetStorage.init();
   initMeeduPlayer();
-  WidgetsFlutterBinding.ensureInitialized();
-
+ HttpOverrides.global =  new MyHttpOverrides();
   SystemTheme.fallbackColor = const Color.fromARGB(255, 50, 134, 82);
   await SystemTheme.accentColor.load();
 
@@ -48,6 +58,6 @@ void main() async {
           // colorSchemeSeed: Colors.red,
           colorSchemeSeed: SystemTheme.accentColor.accent,
         ),
-        home: SplashScreen()),
+        home: const SplashScreen()),
   ));
 }

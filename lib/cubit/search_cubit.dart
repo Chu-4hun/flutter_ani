@@ -21,7 +21,7 @@ class SearchCubit extends Cubit<SearchState> {
             (response.data as List).map((i) => Release.fromJson(i)).toList();
         emit(SearchSucces<Release>(releases));
       }
-    } on DioError catch (e) {
+    } on DioError {
       emit(SearchError("No releases found ( ´･･)ﾉ(._.`)"));
     }
   }
@@ -39,7 +39,7 @@ class SearchCubit extends Cubit<SearchState> {
 
         emit(GetPopularSucces<Release>(releases));
       }
-    } on DioError catch (e) {
+    } on DioError {
       emit(SearchError("No releases found ( ´･･)ﾉ(._.`)"));
     }
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ani/screens/login_screen.dart';
 import 'package:flutter_ani/utils/token.dart';
 import 'package:get/get.dart';
-import 'package:line_icons/line_icons.dart';
 
 import '../http.dart';
 
