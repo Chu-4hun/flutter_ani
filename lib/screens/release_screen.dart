@@ -17,12 +17,19 @@ import 'dart:io' show Platform;
 import '../cubit/release_cubit.dart';
 
 class ReleaseView extends StatefulWidget {
-  ReleaseView({super.key, required this.release, this.herotag, this.episodeId,this.dubId});
+  ReleaseView(
+      {super.key,
+      required this.release,
+      this.herotag,
+      this.episodeId,
+      this.dubId,
+      this.duration});
 
   final Release release;
   final String? herotag;
-  int? episodeId = 0;
-  int? dubId = 0;
+  int? episodeId;
+  int? dubId;
+  final double? duration;
 
   @override
   State<ReleaseView> createState() => _ReleaseViewState();
@@ -31,7 +38,6 @@ class ReleaseView extends StatefulWidget {
 class _ReleaseViewState extends State<ReleaseView> {
   final MeeduPlayerController _meeduPlayerController = MeeduPlayerController(
     enabledButtons: EnabledButtons(rewindAndfastForward: false),
-    // controlsStyle: ControlsStyle(),
     screenManager:
         const ScreenManager(forceLandScapeInFullscreen: false, orientations: [
       DeviceOrientation.portraitUp,
@@ -46,17 +52,27 @@ class _ReleaseViewState extends State<ReleaseView> {
   String streamURL = "";
 
   bool isFullscreen = false;
+  int dubIndex = 0;
+  int episodeIndex = 0;
 
   @override
   void initState() {
     super.initState();
     context.read<ReleaseCubit>().getDubs(widget.release.id);
-    if (widget.episodeId != null) {
-      context.read<ReleaseCubit>().getEpisodeById(widget.episodeId ?? 0);
-    }
+
     if (!Platform.isLinux) {
       Wakelock.enable();
     }
+    bool isFirstOpened = true;
+    _meeduPlayerController.onDataStatusChanged.listen((event) {
+      if (event == DataStatus.loaded &&
+          widget.duration != null &&
+          isFirstOpened) {
+        int seconds = (widget.duration! * 60).toInt();
+        _meeduPlayerController.seekTo(Duration(seconds: seconds));
+        isFirstOpened = false;
+      }
+    });
     _meeduPlayerController.onFullscreenChanged.listen(
       (bool isFullScr) {
         if (isFullScr) {
@@ -111,6 +127,14 @@ class _ReleaseViewState extends State<ReleaseView> {
         listener: (context, state) async {
           if (state is ReleaseInfo) {
             dubs = state.dubs;
+            if (widget.dubId != null) {
+              int selectedIndex =
+                  dubs.indexWhere((dub) => dub.id == widget.dubId);
+              dubIndex = selectedIndex;
+              context
+                  .read<ReleaseCubit>()
+                  .getEpisodesByDub(widget.release.id, dubs[selectedIndex].id);
+            }
             setState(() {});
           }
           if (state is ReleaseError) {
@@ -118,6 +142,14 @@ class _ReleaseViewState extends State<ReleaseView> {
           }
           if (state is ReleaseSucces) {
             episodes = state.result.cast<Episode>();
+            if (widget.episodeId != null && episodes.isNotEmpty) {
+              int selectedEpisodeIndex = episodes
+                  .indexWhere((episode) => episode.id == widget.episodeId);
+              episodeIndex = selectedEpisodeIndex;
+              updateSources(episodes[selectedEpisodeIndex]);
+
+              // context.read<ReleaseCubit>().getEpisodeById(widget.episodeId ?? 0);
+            }
           }
         },
         builder: (context, state) {
@@ -155,61 +187,51 @@ class _ReleaseViewState extends State<ReleaseView> {
                       iconColor: Theme.of(context).colorScheme.primary),
                 ),
               ),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                direction: Axis.horizontal,
-                children: List.generate(
-                  dubs.length,
-                  ((index) => ChoiceChip(
-                        onSelected: (bool isSelected) {
-                          widget.dubId = dubs[index].id;
-                          context.read<ReleaseCubit>().getEpisodesByDub(
-                              widget.release.id, dubs[index].id);
-                        },
-                        label: Text(dubs[index].name),
-                        selected: dubs[index].id == widget.dubId,
-                      )),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Container(
-                  height: 1,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                direction: Axis.horizontal,
-                children: List.generate(
-                  episodes.length,
-                  ((index) => ChoiceChip(
-                        pressElevation: 5,
-                        selectedShadowColor:
-                            Theme.of(context).colorScheme.primary,
-                        onSelected: (bool isSelected) async {
-                          widget.episodeId = episodes[index].id;
-                          var options = await getStreamOptions(episodes[index]);
-                          streamOptions = options ?? List.empty(growable: true);
-                          selectedStreamOption = streamOptions[0];
-                          streamURL = streamOptions[0].src;
-                          _setDataSource();
-                          //TODO
-                          setState(() {});
-                        },
-                        label: Text(episodes[index].epName),
-                        selected: episodes[index].id == widget.episodeId,
-                      )),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Container(
-                  height: 1,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
+              Row(
+                children: [
+                  dubs.length >= 2
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: (DropdownButton<String>(
+                            isExpanded: false,
+                            value: dubIndex.toString(),
+                            items: List.generate(
+                                dubs.length,
+                                (index) => DropdownMenuItem<String>(
+                                      value: index.toString(),
+                                      child: Text(dubs[index].name),
+                                    )),
+                            onChanged: (String? val) {
+                              dubIndex = int.parse(val ?? "0");
+                              widget.dubId = dubs[dubIndex].id;
+                              context.read<ReleaseCubit>().getEpisodesByDub(
+                                  widget.release.id, dubs[dubIndex].id);
+                              setState(() {});
+                            },
+                          )),
+                        )
+                      : Text(dubs.isEmpty ? "" : dubs.last.name),
+                  episodes.length >= 2
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: (DropdownButton<String>(
+                            isExpanded: false,
+                            value: episodeIndex.toString(),
+                            items: List.generate(
+                                episodes.length,
+                                (index) => DropdownMenuItem<String>(
+                                      value: index.toString(),
+                                      child: Text(episodes[index].epName),
+                                    )),
+                            onChanged: (String? val) async {
+                              episodeIndex = int.parse(val ?? "0");
+                              widget.episodeId = episodes[episodeIndex].id;
+                              await updateSources(episodes[episodeIndex]);
+                            },
+                          )),
+                        )
+                      : Text(episodes.isEmpty ? "" : episodes.last.epName),
+                ],
               ),
               AspectRatio(
                 aspectRatio: 16 / 9,
@@ -227,5 +249,15 @@ class _ReleaseViewState extends State<ReleaseView> {
         },
       ),
     );
+  }
+
+  Future<void> updateSources(Episode episode) async {
+    var options = await getStreamOptions(episodes[episodeIndex]);
+    streamOptions = options ?? List.empty(growable: true);
+    selectedStreamOption = streamOptions[0];
+    streamURL = streamOptions[0].src;
+    _setDataSource();
+    //TODO
+    setState(() {});
   }
 }

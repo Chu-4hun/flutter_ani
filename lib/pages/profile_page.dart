@@ -63,6 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Get.to(ReleaseView(
               episodeId: selectedHistory?.episodeId,
               dubId: selectedHistory?.dubId,
+              duration: selectedHistory?.duration,
               release: rel,
             ));
           }
@@ -155,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             img: history[index].img,
                             title: history[index].releaseName,
                             description: history[index].description,
-                            episode: history[index].episodeId,
+                            episode: history[index].position,
                             duration: history[index].duration,
                             height: Get.height / 4,
                             onClick: () {

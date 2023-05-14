@@ -16,6 +16,7 @@ class History {
     double duration;
     DateTime dateWatched;
     int dubId;
+    int position;
 
     History({
         required this.releaseName,
@@ -25,6 +26,7 @@ class History {
         required this.duration,
         required this.dateWatched,
         required this.dubId,
+        required this.position,
     });
 
     factory History.fromJson(Map<String, dynamic> json) => History(
@@ -35,6 +37,7 @@ class History {
         duration: json["duration"],
         dateWatched: DateTime.parse(json["date_watched"]),
         dubId: json["dub_id"],
+        position: json["position"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -45,5 +48,6 @@ class History {
         "duration": duration,
         "date_watched": dateWatched.toIso8601String(),
         "dub_id": dubId,
+        "position": position,
     };
 }
