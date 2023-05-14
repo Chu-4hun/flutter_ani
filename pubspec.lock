@@ -130,10 +130,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_adaptive_navigation
-      sha256: "464620e10c292645a4bb8051a7c35ede31aeddfe0711631d09cf80266dde2656"
+      sha256: "5013ed6c22591b62d91d3028fff20e9665891cc151c053b1934bf541475c3b87"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.5"
   flutter_adaptive_scaffold:
     dependency: "direct main"
     description:
@@ -170,10 +170,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_meedu_videoplayer
-      sha256: "1545cfb759705fb0fb8586bb173f56451a0f3be100f1ae1f1b35318763fd9a5c"
+      sha256: "345511e5362441aa79598a026fabdddf1b5982ff2b2013b981882b435dda137b"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.7"
+    version: "4.2.10"
   flutter_spinkit:
     dependency: transitive
     description:
@@ -484,10 +484,10 @@ packages:
     dependency: transitive
     description:
       name: responsive_builder
-      sha256: f01bc341c73b6db7bd6319e22d2c160f28f924399ae46e6699ecc8160ba2765c
+      sha256: e23ef8ce1191f878dd50d28f1496d659fc923718dbfd407b121bb167f95ba090
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.3"
+    version: "0.6.4"
   responsive_grid_list:
     dependency: "direct main"
     description:
@@ -878,5 +878,5 @@ packages:
     source: hosted
     version: "1.0.0"
 sdks:
-  dart: ">=3.0.0-417 <4.0.0"
+  dart: ">=3.0.0-417 <=3.0.0"
   flutter: ">=3.7.0"

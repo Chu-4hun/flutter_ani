@@ -12,6 +12,7 @@ enum URL {
   searchReleases("watch/releases/search?request="),
   geByEpisodeById('watch/episode/'),
   getReleaseByEpisodeId('watch/release?episode_id='),
+  addHistory("history/insert?"),
 
   getAllDubOptionsForRelease("watch/release/"),
 

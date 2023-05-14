@@ -14,6 +14,7 @@ import 'package:get/get.dart';
 import 'package:wakelock/wakelock.dart';
 import 'dart:io' show Platform;
 
+import '../controllers/update_history_controller.dart';
 import '../cubit/release_cubit.dart';
 
 class ReleaseView extends StatefulWidget {
@@ -21,13 +22,12 @@ class ReleaseView extends StatefulWidget {
       {super.key,
       required this.release,
       this.herotag,
-      this.episodeId,
       this.dubId,
-      this.duration});
+      this.duration, this.episodePosition});
 
   final Release release;
   final String? herotag;
-  int? episodeId;
+  int? episodePosition;
   int? dubId;
   final double? duration;
 
@@ -96,12 +96,15 @@ class _ReleaseViewState extends State<ReleaseView> {
   }
 
   @override
-  void dispose() {
+  Future<void> dispose() async {
+    var time = _meeduPlayerController.position;
+    double minutes = time.value.inSeconds / 60;
     _meeduPlayerController.dispose();
+    updateHistory(episodes[episodeIndex].id, minutes.toStringAsFixed(2));
+
     if (!Platform.isLinux) {
       Wakelock.disable();
     }
-
     super.dispose();
   }
 
@@ -142,10 +145,15 @@ class _ReleaseViewState extends State<ReleaseView> {
           }
           if (state is ReleaseSucces) {
             episodes = state.result.cast<Episode>();
-            if (widget.episodeId != null && episodes.isNotEmpty) {
+            if (widget.episodePosition != null && episodes.isNotEmpty) {
               int selectedEpisodeIndex = episodes
-                  .indexWhere((episode) => episode.id == widget.episodeId);
-              episodeIndex = selectedEpisodeIndex;
+                  .indexWhere((episode) => episode.position == widget.episodePosition);
+              if (selectedEpisodeIndex == -1) {
+                selectedEpisodeIndex = episodes.indexOf(episodes.first);
+              }
+              widget.episodePosition = episodes[selectedEpisodeIndex].position;
+
+              episodeIndex = selectedEpisodeIndex.abs();
               updateSources(episodes[selectedEpisodeIndex]);
 
               // context.read<ReleaseCubit>().getEpisodeById(widget.episodeId ?? 0);
@@ -202,7 +210,7 @@ class _ReleaseViewState extends State<ReleaseView> {
                                       child: Text(dubs[index].name),
                                     )),
                             onChanged: (String? val) {
-                              dubIndex = int.parse(val ?? "0");
+                              dubIndex = int.parse(val ?? "0").abs();
                               widget.dubId = dubs[dubIndex].id;
                               context.read<ReleaseCubit>().getEpisodesByDub(
                                   widget.release.id, dubs[dubIndex].id);
@@ -224,8 +232,8 @@ class _ReleaseViewState extends State<ReleaseView> {
                                       child: Text(episodes[index].epName),
                                     )),
                             onChanged: (String? val) async {
-                              episodeIndex = int.parse(val ?? "0");
-                              widget.episodeId = episodes[episodeIndex].id;
+                              episodeIndex = int.parse(val ?? "0").abs();
+                              widget.episodePosition= episodes[episodeIndex].position;
                               await updateSources(episodes[episodeIndex]);
                             },
                           )),

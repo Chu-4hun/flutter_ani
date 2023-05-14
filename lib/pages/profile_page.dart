@@ -61,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is HistoryReleaseSucces) {
             Release rel = state.result;
             Get.to(ReleaseView(
-              episodeId: selectedHistory?.episodeId,
+              episodePosition: selectedHistory?.position,
               dubId: selectedHistory?.dubId,
               duration: selectedHistory?.duration,
               release: rel,
