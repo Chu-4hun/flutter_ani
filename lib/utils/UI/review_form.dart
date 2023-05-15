@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 
 class ReviewForm extends StatefulWidget {
-   ReviewForm({
-    super.key, required this.submitFunction,
+  ReviewForm({
+    super.key,
+    required this.submitFunction,
   });
 
   final void Function(double rating, String text) submitFunction;
@@ -67,7 +68,15 @@ class _ReviewFormState extends State<ReviewForm> {
             ),
             Align(
                 alignment: Alignment.centerRight,
-                child: FilledButton(onPressed:(){widget.submitFunction(rating, _textEditingController.text);}, child: Text("Отправить")))
+                child: FilledButton(
+                    onPressed: () {
+                      widget.submitFunction(
+                          rating, _textEditingController.text);
+                      rating = 0;
+                      _textEditingController.text = "";
+                      setState(() {});
+                    },
+                    child: Text("Отправить")))
           ],
         ),
       ),

@@ -17,6 +17,7 @@ import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.da
 import 'package:wakelock/wakelock.dart';
 import 'dart:io' show Platform;
 
+import '../controllers/bookmark_controller.dart';
 import '../controllers/update_history_controller.dart';
 import '../cubit/release_cubit.dart';
 import '../utils/UI/review_form.dart';
@@ -135,6 +136,14 @@ class _ReleaseViewState extends State<ReleaseView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: isFullscreen
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                addBookmark(widget.release.id, " ");
+              },
+              child: const Icon(Icons.bookmark_add),
+            ),
       appBar: isFullscreen
           ? null
           : AppBar(

@@ -14,12 +14,16 @@ enum URL {
 
   geByEpisodeById('watch/episode/'),
   getReleaseByEpisodeId('watch/release?episode_id='),
+  getReleaseById('watch/release/'),
 
   addHistory("history/insert?"),
   getHistoryById('history/'),
 
   getReviewsWithPagination("review/"),
   sendReview("review/insert"),
+
+  addBookmark("bookmark/add?"),
+  getBookmark("bookmark/"),
   
   addFriend('interact/friend/add/');
 

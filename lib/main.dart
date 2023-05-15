@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_ani/cubit/bookmark_cubit.dart';
 import 'package:flutter_ani/cubit/search_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_meedu_videoplayer/init_meedu_player.dart';
@@ -13,19 +14,19 @@ import 'cubit/history_cubit.dart';
 import 'cubit/release_cubit.dart';
 import 'screens/loading_screen.dart';
 
-
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
 void main() async {
   await GetStorage.init();
   initMeeduPlayer();
- HttpOverrides.global =  new MyHttpOverrides();
+  HttpOverrides.global = new MyHttpOverrides();
   SystemTheme.fallbackColor = const Color.fromARGB(255, 50, 134, 82);
   await SystemTheme.accentColor.load();
 
@@ -42,6 +43,9 @@ void main() async {
       ),
       BlocProvider(
         create: (context) => HistoryCubit(),
+      ),
+      BlocProvider(
+        create: (context) => BookmarkCubit(),
       ),
     ],
     child: GetMaterialApp(
