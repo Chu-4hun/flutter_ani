@@ -39,6 +39,16 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  Future<void> _pullRefresh() async {
+    getUserProfile(accesToken!).then((value) {
+      userInfo = value;
+      context.read<HistoryCubit>().getHistory(userInfo!.id);
+    });
+    setState(() {
+      
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,11 +89,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   userInfo?.avatar != null
                       ? CircleAvatar(
                           radius: Get.height / 5 / 2,
-                          backgroundImage: NetworkImage(userInfo?.avatar ?? ""),
+                          backgroundImage:
+                              NetworkImage(userInfo?.avatar ?? ""),
                         )
                       : CircleAvatar(
                           radius: Get.height / 5 / 2,
-                          backgroundImage: const AssetImage("res/loading.gif"),
+                          backgroundImage:
+                              const AssetImage("res/loading.gif"),
                         ),
                   SizedBox(
                     height: Get.height / 50,
@@ -109,7 +121,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Card(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        color:
+                            Theme.of(context).colorScheme.secondaryContainer,
                         child: const Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Center(
@@ -118,7 +131,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       Card(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        color:
+                            Theme.of(context).colorScheme.secondaryContainer,
                         child: const Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Center(
@@ -145,30 +159,33 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   if (history.isNotEmpty)
-                    ListView.builder(
-                      clipBehavior: Clip.antiAlias,
-                      shrinkWrap: true,
-                      itemCount: history.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: MovieTileWithPlay(
-                            img: history[index].img,
-                            title: history[index].releaseName,
-                            description: history[index].description,
-                            episode: history[index].position,
-                            duration: history[index].duration,
-                            height: Get.height / 4,
-                            onClick: () {
-                              selectedHistory = history[index];
-                              context
-                                  .read<HistoryCubit>()
-                                  .getReleaseByEpisodeId(
-                                      history[index].episodeId);
-                            },
-                          ),
-                        );
-                      },
+                    RefreshIndicator(
+                      onRefresh: _pullRefresh,
+                      child: ListView.builder(
+                        clipBehavior: Clip.antiAlias,
+                        shrinkWrap: true,
+                        itemCount: history.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MovieTileWithPlay(
+                              img: history[index].img,
+                              title: history[index].releaseName,
+                              description: history[index].description,
+                              episode: history[index].position,
+                              duration: history[index].duration,
+                              height: Get.height / 4,
+                              onClick: () {
+                                selectedHistory = history[index];
+                                context
+                                    .read<HistoryCubit>()
+                                    .getReleaseByEpisodeId(
+                                        history[index].episodeId);
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   SizedBox(
                     height: Get.height / 10,
