@@ -7,23 +7,30 @@ import 'package:flutter_ani/controllers/video_options_for_episode_controller.dar
 import 'package:flutter_ani/models/dub.dart';
 import 'package:flutter_ani/models/episodes.dart';
 import 'package:flutter_ani/models/release.dart';
+import 'package:flutter_ani/models/review.dart';
 import 'package:flutter_ani/models/stream_option.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_meedu_videoplayer/meedu_player.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:get/get.dart';
+import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:wakelock/wakelock.dart';
 import 'dart:io' show Platform;
 
 import '../controllers/update_history_controller.dart';
 import '../cubit/release_cubit.dart';
+import '../utils/UI/review_form.dart';
+import '../utils/UI/review_tile.dart';
 
+// ignore: must_be_immutable
 class ReleaseView extends StatefulWidget {
   ReleaseView(
       {super.key,
       required this.release,
       this.herotag,
       this.dubId,
-      this.duration, this.episodePosition});
+      this.duration,
+      this.episodePosition});
 
   final Release release;
   final String? herotag;
@@ -47,6 +54,7 @@ class _ReleaseViewState extends State<ReleaseView> {
   List<Dub> dubs = List.empty(growable: true);
   List<Episode> episodes = List.empty(growable: true);
   List<StreamOption> streamOptions = List.empty(growable: true);
+  List<Review> reviews = List.empty(growable: true);
 
   StreamOption? selectedStreamOption;
   String streamURL = "";
@@ -54,11 +62,15 @@ class _ReleaseViewState extends State<ReleaseView> {
   bool isFullscreen = false;
   int dubIndex = 0;
   int episodeIndex = 0;
+  int reviewPage = 0;
 
   @override
   void initState() {
     super.initState();
     context.read<ReleaseCubit>().getDubs(widget.release.id);
+    context
+        .read<ReleaseCubit>()
+        .getReviewsByRelease(widget.release.id, reviewPage);
 
     if (!Platform.isLinux) {
       Wakelock.enable();
@@ -100,7 +112,9 @@ class _ReleaseViewState extends State<ReleaseView> {
     var time = _meeduPlayerController.position;
     double minutes = time.value.inSeconds / 60;
     _meeduPlayerController.dispose();
-    updateHistory(episodes[episodeIndex].id, minutes.toStringAsFixed(2));
+    if (episodes.isNotEmpty) {
+      updateHistory(episodes[episodeIndex].id, minutes.toStringAsFixed(2));
+    }
 
     if (!Platform.isLinux) {
       Wakelock.disable();
@@ -146,8 +160,8 @@ class _ReleaseViewState extends State<ReleaseView> {
           if (state is ReleaseSucces) {
             episodes = state.result.cast<Episode>();
             if (widget.episodePosition != null && episodes.isNotEmpty) {
-              int selectedEpisodeIndex = episodes
-                  .indexWhere((episode) => episode.position == widget.episodePosition);
+              int selectedEpisodeIndex = episodes.indexWhere(
+                  (episode) => episode.position == widget.episodePosition);
               if (selectedEpisodeIndex == -1) {
                 selectedEpisodeIndex = episodes.indexOf(episodes.first);
               }
@@ -155,9 +169,10 @@ class _ReleaseViewState extends State<ReleaseView> {
 
               episodeIndex = selectedEpisodeIndex.abs();
               updateSources(episodes[selectedEpisodeIndex]);
-
-              // context.read<ReleaseCubit>().getEpisodeById(widget.episodeId ?? 0);
             }
+          }
+          if (state is ReviewSucces) {
+            reviews += state.result.cast<Review>();
           }
         },
         builder: (context, state) {
@@ -233,7 +248,8 @@ class _ReleaseViewState extends State<ReleaseView> {
                                     )),
                             onChanged: (String? val) async {
                               episodeIndex = int.parse(val ?? "0").abs();
-                              widget.episodePosition= episodes[episodeIndex].position;
+                              widget.episodePosition =
+                                  episodes[episodeIndex].position;
                               await updateSources(episodes[episodeIndex]);
                             },
                           )),
@@ -251,6 +267,38 @@ class _ReleaseViewState extends State<ReleaseView> {
                     );
                   },
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ReviewForm(
+                  submitFunction: (double rating, String text) {
+                    context.read<ReleaseCubit>().sendReview(SimpleReview(
+                        reviewText: text,
+                        rating: rating.toInt(),
+                        releaseFk: widget.release.id));
+                  },
+                ),
+              ),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "Отзывы:",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        decorationStyle: TextDecorationStyle.wavy),
+                  ),
+                ),
+              ),
+              ListView.builder(
+                clipBehavior: Clip.antiAlias,
+                shrinkWrap: true,
+                itemCount: reviews.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ReviewTile(review: reviews[index]);
+                },
               ),
             ],
           );

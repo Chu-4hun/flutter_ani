@@ -17,16 +17,15 @@ class ReleaseSucces<T> extends ReleaseState {
   ReleaseSucces(this.result);
 }
 
-class ReleaseEpisodeSucces<Episode> extends ReleaseState {
-   final Episode result;
-
-  ReleaseEpisodeSucces(this.result);
-}
-
 class ReleaseLoading extends ReleaseState {}
 
 class ReleaseError extends ReleaseState {
   final String error;
 
   ReleaseError(this.error);
+}
+class ReviewSucces<T> extends ReleaseState {
+   final List<T> result;
+
+  ReviewSucces(this.result);
 }

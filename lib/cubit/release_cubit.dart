@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 
 import '../http.dart';
+import '../models/review.dart';
 import '../utils/url.dart';
 
 part 'release_state.dart';
@@ -56,18 +57,30 @@ class ReleaseCubit extends Cubit<ReleaseState> {
     }
   }
 
-  Future<void> getEpisodeById(int id) async {
+  Future<void> getReviewsByRelease(int id, int? page) async {
+    page ?? 0;
     try {
-      final response = await dio.get("${URL.geByEpisodeById.value}$id");
+      final response =
+          await dio.get("${URL.getReviewsWithPagination.value}$id/$page");
       if (response.statusCode == 200) {
-        var episode = Episode.fromJson(response.data);
-        if (episode == null) {
-          emit(ReleaseError("Cannot get episode"));
-        }
-        emit(ReleaseEpisodeSucces<Episode>(episode));
+        var reviews =
+            (response.data as List).map((i) => Review.fromJson(i)).toList();
+        emit(ReviewSucces<Review>(reviews));
       }
-    } on DioError {
-      emit(ReleaseError("Something went wrong."));
+    } on DioError catch (e) {
+      emit(ReleaseError("No reviews records available.$e"));
+    }
+  }
+
+  Future<void> sendReview(SimpleReview review) async {
+    try {
+      final response =
+          await dio.put(URL.sendReview.value, data: review.toJson());
+      if (response.statusCode == 200) {
+        emit(ReviewSucces<Review>([]));
+      }
+    } on DioError catch (e) {
+      emit(ReleaseError("Cant send review. $e , ${e.response?.statusCode}"));
     }
   }
 }
