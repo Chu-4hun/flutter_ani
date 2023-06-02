@@ -11,9 +11,7 @@ import 'package:flutter_ani/models/review.dart';
 import 'package:flutter_ani/models/stream_option.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_meedu_videoplayer/meedu_player.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:get/get.dart';
-import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:wakelock/wakelock.dart';
 import 'dart:io' show Platform;
 
@@ -270,11 +268,22 @@ class _ReleaseViewState extends State<ReleaseView> {
                 aspectRatio: 16 / 9,
                 child: MeeduVideoPlayer(
                   controller: _meeduPlayerController,
-                  bottomRight: (context, controller, responsive) {
-                    return ActionChip(
-                      label: Text(selectedStreamOption?.name ?? "none"),
-                    );
-                  },
+                    //TODO stream quality
+                  // bottomRight: (context, controller, responsive) {
+
+                  //   // return DropdownButton<String>(
+                  //   //   items: <String>['A', 'B', 'C', 'D'].map((String value) {
+                  //   //     return DropdownMenuItem<String>(
+                  //   //       value: value,
+                  //   //       child: Text(value),
+                  //   //     );
+                  //   //   }).toList(),
+                  //   //   onChanged: (_) {},
+                  //   // );
+                  //   return ActionChip(
+                  //     label: Text(selectedStreamOption?.name ?? "none"),
+                  //   );
+                  // },
                 ),
               ),
               Padding(

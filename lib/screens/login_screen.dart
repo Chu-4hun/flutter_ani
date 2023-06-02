@@ -151,7 +151,7 @@ class LoginForm extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           CustomAcceptButton(
-            func: () {
+            onPressed: () {
               if (_key.currentState!.validate()) {
                 context.read<AuthCubit>().login(
                       _loginController.text,

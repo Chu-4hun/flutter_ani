@@ -23,7 +23,7 @@ class _ReviewFormState extends State<ReviewForm> {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Theme.of(context).colorScheme.tertiaryContainer,
+        color: Theme.of(context).colorScheme.secondaryContainer,
       ),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -69,6 +69,7 @@ class _ReviewFormState extends State<ReviewForm> {
             Align(
                 alignment: Alignment.centerRight,
                 child: FilledButton(
+                    
                     onPressed: () {
                       widget.submitFunction(
                           rating, _textEditingController.text);

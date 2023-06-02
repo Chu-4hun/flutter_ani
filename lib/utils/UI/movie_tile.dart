@@ -82,7 +82,8 @@ class MovieTileWithPlay extends StatelessWidget {
                         label: Text(
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                                overflow: TextOverflow.fade,
+                                fontSize: 15,
                                 decorationStyle: TextDecorationStyle.wavy),
                             "Серия: $episode Время: $duration"),
                       ),

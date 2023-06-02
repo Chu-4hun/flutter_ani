@@ -134,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
                         "История:",
                         style: TextStyle(
@@ -149,6 +149,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       clipBehavior: Clip.antiAlias,
                       shrinkWrap: true,
                       itemCount: history.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),

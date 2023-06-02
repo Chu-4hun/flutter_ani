@@ -176,7 +176,7 @@ class LoginForm extends StatelessWidget {
               "Register",
               style: TextStyle(color: Theme.of(context).colorScheme.background),
             )),
-            func: () {
+            onPressed: () {
               if (_key.currentState!.validate()) {
                 context.read<AuthCubit>().register(User(
                     login: _loginController.text,

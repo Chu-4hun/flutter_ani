@@ -27,7 +27,8 @@ class _HomePageState extends State<HomePage> {
 
   _scrollListener() {
     if (_scrollController.position.maxScrollExtent ==
-        _scrollController.offset) {
+            _scrollController.offset &&
+        _searchController.text.isEmpty) {
       if (!_isNeedsToLoadMore) return;
       print("LOAD");
       cursor += 20;
@@ -78,9 +79,16 @@ class _HomePageState extends State<HomePage> {
                   child: TextField(
                     controller: _searchController,
                     onEditingComplete: () async {
-                      await context
-                          .read<SearchCubit>()
-                          .search_releases(_searchController.text);
+                      if (_searchController.text == "") {
+                        cursor = 0;
+                        _isNeedsToLoadMore = true;
+                      } else {
+                        cursor = 0;
+                        _isNeedsToLoadMore = false;
+                        await context
+                            .read<SearchCubit>()
+                            .search_releases(_searchController.text);
+                      }
                     },
                     decoration: InputDecoration(
                       contentPadding:
