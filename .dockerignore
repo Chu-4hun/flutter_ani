@@ -1,0 +1,9 @@
+build
+.idea
+.git
+dockerfile
+windows
+macos
+linux
+ios
+android

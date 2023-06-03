@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_meedu_videoplayer/meedu_player.dart';
 import 'package:get/get.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 
 import '../controllers/bookmark_controller.dart';
@@ -70,10 +71,12 @@ class _ReleaseViewState extends State<ReleaseView> {
     context
         .read<ReleaseCubit>()
         .getReviewsByRelease(widget.release.id, reviewPage);
-
-    if (!Platform.isLinux) {
-      Wakelock.enable();
+    if (!kIsWeb) {
+      if (!Platform.isLinux) {
+        Wakelock.enable();
+      }
     }
+
     bool isFirstOpened = true;
     _meeduPlayerController.onDataStatusChanged.listen((event) {
       if (event == DataStatus.loaded &&
@@ -115,8 +118,10 @@ class _ReleaseViewState extends State<ReleaseView> {
       updateHistory(episodes[episodeIndex].id, minutes.toStringAsFixed(2));
     }
 
-    if (!Platform.isLinux) {
-      Wakelock.disable();
+    if (!kIsWeb) {
+      if (!Platform.isLinux) {
+        Wakelock.enable();
+      }
     }
     super.dispose();
   }
@@ -300,9 +305,7 @@ class _ReleaseViewState extends State<ReleaseView> {
                         reviewText: text,
                         rating: rating.toInt(),
                         releaseFk: widget.release.id));
-                        setState(() {
-                          
-                        });
+                    setState(() {});
                   },
                 ),
               ),
