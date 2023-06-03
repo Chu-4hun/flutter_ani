@@ -102,9 +102,15 @@ class AuthInterceptor extends Interceptor {
     try {
       // get refresh token from local storage
       final refreshToken = Token(TokenType.refresh).read();
+      Dio dio2 = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 3),
+          baseUrl: BASE_URL,
+        ),
+      );
 
       // make request to server to get the new access token from server using refresh token
-      final response = await dio.get(
+      final response = await dio2.get(
         URL.accessToken.value,
         options: Options(headers: {"Authorization": "Bearer $refreshToken"}),
       );
@@ -113,7 +119,7 @@ class AuthInterceptor extends Interceptor {
           response.statusCode == 201 ||
           response.statusCode == 202) {
         final newAccessToken = response
-            .data["accessToken"]; // parse data based on your JSON structure
+            .data; // parse data based on your JSON structure
         Token(TokenType.access).store(newAccessToken); // save to local storage
         return true;
       } else if (response.statusCode == 401 || response.statusCode == 403) {
@@ -124,7 +130,8 @@ class AuthInterceptor extends Interceptor {
         print(response.statusCode);
         return false;
       }
-    } on DioError {
+    } catch (e) {
+      print("Возникло исключение $e");
       return false;
     }
   }

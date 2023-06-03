@@ -261,14 +261,20 @@ class _ReleaseViewState extends State<ReleaseView> {
                             },
                           )),
                         )
-                      : Text(episodes.isEmpty ? "" : episodes.last.epName),
+                      : InkWell(
+                          child: Text(
+                              episodes.isEmpty ? "" : episodes.last.epName),
+                          onTap: () {
+                            if (episodes.isNotEmpty) updateSources(episodes[0]);
+                          },
+                        ),
                 ],
               ),
               AspectRatio(
                 aspectRatio: 16 / 9,
                 child: MeeduVideoPlayer(
                   controller: _meeduPlayerController,
-                    //TODO stream quality
+                  //TODO stream quality
                   // bottomRight: (context, controller, responsive) {
 
                   //   // return DropdownButton<String>(
@@ -294,6 +300,9 @@ class _ReleaseViewState extends State<ReleaseView> {
                         reviewText: text,
                         rating: rating.toInt(),
                         releaseFk: widget.release.id));
+                        setState(() {
+                          
+                        });
                   },
                 ),
               ),

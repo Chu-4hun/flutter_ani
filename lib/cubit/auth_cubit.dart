@@ -75,7 +75,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
 
     try {
-      final response = await dio.post(URL.register.value, data: user.toJson());
+      final response = await dio.post(URL.register.value, data: user.toRawJson());
       logger.d('${response.statusCode}\n ${response.data}');
       if (response.statusCode == 200) {
         emit(RegisterSucces());
