@@ -8,7 +8,7 @@ Flutter ani app
 ## TODO :
 
 - [ ] Popular page
-  - [ ] Pagination
+  - [x] Pagination
 - [ ] Profile
   - [ ] `Change profile` form
     - [ ] username
@@ -18,9 +18,9 @@ Flutter ani app
   - [ ]  Page with named tabs
   - [ ]  Move to another collection
 - [ ] Release page  
-  - [ ]  Add to collection
+  - [x]  Add to collection
   - [ ]  Share button
-- [ ] History
-  - [ ] Save last watched episode
-  - [ ] Add `Continue watching?` widget
-  - [ ] Add last watched 5 titles in the profile page
+- [x] History
+  - [x] Save last watched episode
+  - [x] Add `Continue watching?` widget
+  - [x] Add last watched 5 titles in the profile page
