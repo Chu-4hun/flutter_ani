@@ -51,6 +51,7 @@ dependencies:
   expandable: ^5.0.1
   # better_player_hls: ^0.0.84
   flutter_meedu_videoplayer: ^4.2.7
+  video_player_web_hls: ^1.0.0+3
   wakelock: ^0.6.2
   date_format: ^2.0.7
   flutter_rating_stars: ^1.0.3+4
