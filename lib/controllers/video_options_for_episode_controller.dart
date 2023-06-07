@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_ani/models/episodes.dart';
 
 import '../models/stream_option.dart';
+import '../utils/url.dart';
 
 Future<List<StreamOption>?> getStreamOptions(Episode episode) async {
   List<String> pathSegments = Uri.parse(episode.url).pathSegments;
@@ -15,7 +16,7 @@ Future<List<StreamOption>?> getStreamOptions(Episode episode) async {
       'hash': pathSegments[2]
     });
     final response = await dio.post(
-      "https://kodik.cc/gvi",
+      "$HOST_URL/kodik/gvi",
       data: formData,
     );
     if (response.statusCode == 202 || response.statusCode == 200) {

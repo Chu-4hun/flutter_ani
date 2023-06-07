@@ -35,3 +35,4 @@ enum URL {
 
 // ignore: constant_identifier_names
 const String BASE_URL = 'http://194.87.238.111:80/api/v1/';
+const String HOST_URL = 'http://194.87.238.111:80/';
