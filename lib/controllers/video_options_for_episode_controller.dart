@@ -15,8 +15,9 @@ Future<List<StreamOption>?> getStreamOptions(Episode episode) async {
       'id': pathSegments[1],
       'hash': pathSegments[2]
     });
+    var url = "${HOST_URL}kodik/gvi";
     final response = await dio.post(
-      "$HOST_URL/kodik/gvi",
+      url,
       data: formData,
     );
     if (response.statusCode == 202 || response.statusCode == 200) {
